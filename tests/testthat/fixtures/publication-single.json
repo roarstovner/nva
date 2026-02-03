@@ -1,0 +1,55 @@
+{
+  "identifier": "01907b5e-1234-5678-abcd-123456789abc",
+  "type": "Publication",
+  "status": "Published",
+  "title": {
+    "en": "A Comprehensive Study of Testing in R"
+  },
+  "abstract": {
+    "en": "This is an abstract for the test publication."
+  },
+  "publicationDate": {
+    "year": "2024",
+    "month": "06",
+    "day": "15"
+  },
+  "contributors": [
+    {
+      "identity": {
+        "id": "https://api.cristin.no/v2/persons/12345",
+        "name": "Test Author",
+        "orcid": "0000-0001-2345-6789"
+      },
+      "affiliations": [
+        {
+          "id": "https://api.cristin.no/v2/units/185.90.0.0",
+          "name": {
+            "en": "OsloMet - Oslo Metropolitan University"
+          }
+        }
+      ],
+      "role": "Creator"
+    }
+  ],
+  "entityDescription": {
+    "publicationInstance": {
+      "type": "AcademicArticle"
+    },
+    "reference": {
+      "publicationContext": {
+        "type": "Journal",
+        "name": "Journal of Statistical Software"
+      },
+      "doi": "10.18637/jss.v000.i00"
+    }
+  },
+  "associatedArtifacts": [
+    {
+      "type": "PublishedFile",
+      "identifier": "file-uuid-1234",
+      "name": "manuscript.pdf",
+      "mimeType": "application/pdf",
+      "size": 1234567
+    }
+  ]
+}

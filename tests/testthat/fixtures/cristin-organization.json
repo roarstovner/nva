@@ -1,0 +1,33 @@
+{
+  "id": "185.90.0.0",
+  "type": "Organization",
+  "identifier": [
+    {
+      "type": "CristinIdentifier",
+      "value": "185"
+    }
+  ],
+  "name": {
+    "en": "OsloMet - Oslo Metropolitan University",
+    "nb": "OsloMet - storbyuniversitetet"
+  },
+  "acronym": "OsloMet",
+  "country": "NO",
+  "partOf": [],
+  "hasPart": [
+    {
+      "id": "185.90.1.0",
+      "type": "Organization",
+      "name": {
+        "en": "Faculty of Social Sciences"
+      }
+    },
+    {
+      "id": "185.90.2.0",
+      "type": "Organization",
+      "name": {
+        "en": "Faculty of Technology, Art and Design"
+      }
+    }
+  ]
+}

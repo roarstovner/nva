@@ -1,0 +1,32 @@
+{
+  "id": "12345",
+  "cristinPersonId": "12345",
+  "names": [
+    {
+      "type": "PreferredName",
+      "firstName": "Test",
+      "lastName": "Person"
+    }
+  ],
+  "identifiers": [
+    {
+      "type": "CristinIdentifier",
+      "value": "12345"
+    },
+    {
+      "type": "ORCID",
+      "value": "0000-0001-2345-6789"
+    }
+  ],
+  "affiliations": [
+    {
+      "organization": "https://api.cristin.no/v2/units/185.90.0.0",
+      "organizationName": {
+        "en": "OsloMet - Oslo Metropolitan University"
+      },
+      "active": true
+    }
+  ],
+  "keywords": [],
+  "background": {}
+}

@@ -17,3 +17,7 @@ Imports:
     purrr,
     rlang (>= 1.0.0),
     cli
+Suggests:
+    jsonlite,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

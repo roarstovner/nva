@@ -1,0 +1,38 @@
+{
+  "hits": [
+    {
+      "identifier": "01907b5e-1234-5678-abcd-123456789abc",
+      "type": "Publication",
+      "title": {
+        "en": "Test Publication Title"
+      },
+      "publicationDate": {
+        "year": "2024",
+        "month": "06",
+        "day": "15"
+      },
+      "contributors": [
+        {
+          "identity": {
+            "name": "Test Author"
+          },
+          "affiliations": [
+            {
+              "name": {
+                "en": "Test University"
+              }
+            }
+          ]
+        }
+      ],
+      "entityDescription": {
+        "publicationInstance": {
+          "type": "AcademicArticle"
+        }
+      }
+    }
+  ],
+  "totalHits": 1,
+  "size": 1,
+  "offset": 0
+}
