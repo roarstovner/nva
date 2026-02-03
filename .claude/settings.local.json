@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__r-btw__btw_tool_docs_help_page",
+      "WebFetch(domain:swagger-ui.nva.unit.no)",
+      "WebFetch(domain:api.nva.unit.no)",
+      "mcp__r-btw__btw_tool_docs_package_help_topics",
+      "Bash(chainlink comment:*)",
+      "Bash(chainlink subissue:*)"
+    ]
+  }
+}
