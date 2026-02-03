@@ -7,7 +7,21 @@
       "mcp__r-btw__btw_tool_docs_package_help_topics",
       "Bash(chainlink comment:*)",
       "Bash(chainlink subissue:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(cd:*)",
+      "Bash(chainlink session work:*)",
+      "Bash(chainlink show:*)",
+      "mcp__r-btw__btw_tool_run_r",
+      "Bash(chainlink session end:*)",
+      "Bash(chainlink status:*)",
+      "Bash(chainlink list:*)",
+      "Bash(chainlink session status:*)",
+      "Bash(chainlink block:*)",
+      "Bash(chainlink label:*)",
+      "Bash(chainlink ready:*)",
+      "Bash(chainlink close:*)",
+      "Bash(git add:*)",
+      "Bash(git rm:*)"
     ]
   }
 }
