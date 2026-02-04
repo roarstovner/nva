@@ -1,3 +1,67 @@
+#' Extract ID from NVA API URL
+#'
+#' Extracts the resource ID from URLs like:
+#' `https://api.nva.unit.no/cristin/organization/185.0.0.0`
+#'
+#' @param url URL string or vector of URLs
+#' @param resource Resource type path (e.g., "cristin/organization", "cristin/person")
+#'
+#' @return Character vector of extracted IDs
+#' @noRd
+nva_extract_id <- function(url, resource) {
+  pattern <- paste0(".*/", resource, "/")
+  sub(pattern, "", as.character(url))
+}
+
+#' Extract label with language preference
+#'
+#' Extracts a label from a named list with language codes, preferring
+#' English, then Norwegian Bokmal, then Norwegian Nynorsk.
+#'
+#' @param labels Named list with language codes (en, nb, nn)
+#' @param languages Character vector of language codes in preference order
+#'
+#' @return Character string or NA_character_
+#' @noRd
+nva_get_label <- function(labels, languages = c("en", "nb", "nn")) {
+  if (is.null(labels)) return(NA_character_)
+
+  for (lang in languages) {
+    if (!is.null(labels[[lang]])) {
+      return(labels[[lang]])
+    }
+  }
+
+  # Fall back to first available
+  if (length(labels) > 0) {
+    return(labels[[1]])
+  }
+
+  NA_character_
+}
+
+#' Create empty tibble with specified column types
+#'
+#' @param ... Named type specifications. Names become column names,
+#'   values are type indicators: "chr", "int", "dbl", "lgl", "list"
+#'
+#' @return An empty tibble with proper column types
+#' @noRd
+nva_empty_tibble <- function(...) {
+  specs <- list(...)
+
+  type_map <- list(
+    chr = character(),
+    int = integer(),
+    dbl = double(),
+    lgl = logical(),
+    list = list()
+  )
+
+  cols <- purrr::map(specs, \(type) type_map[[type]])
+  tibble::as_tibble(cols)
+}
+
 #' Convert NVA API response to tibble
 #'
 #' Converts a JSON response from the NVA API to a tibble. Handles both

@@ -5,18 +5,18 @@
 \title{Search for Cristin persons}
 \usage{
 nva_cristin_person_search(
-  name = NULL,
+  query = NULL,
   organization = NULL,
-  results = 10L,
+  limit = 10L,
   page = 1L
 )
 }
 \arguments{
-\item{name}{Name to search for (partial match supported)}
+\item{query}{Name to search for (partial match supported)}
 
 \item{organization}{Filter by organization Cristin ID}
 
-\item{results}{Number of results to return per page (default: 10, max: 100)}
+\item{limit}{Number of results to return per page (default: 10, max: 100)}
 
 \item{page}{Page number for pagination (default: 1)}
 }
@@ -24,8 +24,8 @@ nva_cristin_person_search(
 A tibble with columns:
 \describe{
 \item{id}{Cristin person ID}
-\item{firstName}{First name}
-\item{lastName}{Last name}
+\item{first_name}{First name}
+\item{last_name}{Last name}
 \item{affiliations}{List of current affiliations}
 }
 }
@@ -35,9 +35,9 @@ Search the Cristin person registry by name or other criteria.
 \examples{
 \dontrun{
 # Search for researchers by name
-nva_cristin_person_search(name = "Hansen")
+nva_cristin_person_search(query = "Hansen")
 
 # Search within an organization
-nva_cristin_person_search(name = "Olsen", organization = "185")
+nva_cristin_person_search(query = "Olsen", organization = "185")
 }
 }

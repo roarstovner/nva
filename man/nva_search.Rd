@@ -6,10 +6,10 @@
 \usage{
 nva_search(
   query,
-  results = 10L,
-  from = 0L,
+  limit = 10L,
+  offset = 0L,
   sort = c("relevance", "modifiedDate", "createdDate", "publishedDate"),
-  institution = NULL,
+  organization = NULL,
   year = NULL,
   type = NULL,
   fetch_all = FALSE,
@@ -19,14 +19,14 @@ nva_search(
 \arguments{
 \item{query}{Search query string}
 
-\item{results}{Number of results to return per page (default: 10, max: 100)}
+\item{limit}{Number of results to return per page (default: 10, max: 100)}
 
-\item{from}{Offset for pagination (default: 0)}
+\item{offset}{Offset for pagination (default: 0)}
 
 \item{sort}{Sort order. One of "relevance" (default), "modifiedDate",
 "createdDate", or "publishedDate"}
 
-\item{institution}{Filter by institution Cristin ID (e.g., "185" for UiO)}
+\item{organization}{Filter by organization Cristin ID (e.g., "185" for UiO)}
 
 \item{year}{Filter by publication year (e.g., 2024 or "2020-2024")}
 
@@ -59,9 +59,9 @@ a query string.
 nva_search("climate change")
 
 # Search with filters
-nva_search("machine learning", year = 2024, results = 20)
+nva_search("machine learning", year = 2024, limit = 20)
 
-# Fetch all results for a specific institution
-nva_search("biodiversity", institution = "185", fetch_all = TRUE)
+# Fetch all results for a specific organization
+nva_search("biodiversity", organization = "185", fetch_all = TRUE)
 }
 }

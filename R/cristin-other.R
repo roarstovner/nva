@@ -4,7 +4,7 @@
 #'
 #' @param query Keyword text to search for
 #' @param language Language filter (e.g., "nb", "en")
-#' @param results Number of results per page (default: 10)
+#' @param limit Number of results per page (default: 10)
 #' @param page Page number (default: 1)
 #'
 #' @return A tibble with columns:
@@ -18,33 +18,26 @@
 #'
 #' @examples
 #' \dontrun{
-#' nva_cristin_keywords(query = "machine learning")
+#' nva_cristin_keyword_search(query = "machine learning")
 #' }
-nva_cristin_keywords <- function(query = NULL,
-                                  language = NULL,
-                                  results = 10L,
-                                  page = 1L) {
+nva_cristin_keyword_search <- function(query = NULL,
+                                        language = NULL,
+                                        limit = 10L,
+                                        page = 1L) {
   if (is.null(query)) {
     cli::cli_abort("{.arg query} is required.")
   }
 
-  resp <- nva_request(
+  tbl <- nva_get_tibble(
     "cristin/keyword",
     name = query,
     language = language,
-    results = results,
+    results = limit,
     page = page
-  ) |>
-    httr2::req_perform()
-
-  tbl <- nva_resp_body_tibble(resp)
+  )
 
   if (nrow(tbl) == 0) {
-    return(tibble::tibble(
-      id = character(),
-      label = character(),
-      language = character()
-    ))
+    return(schema_cristin_keyword())
   }
 
   nva_parse_cristin_keywords(tbl)
@@ -54,7 +47,7 @@ nva_cristin_keywords <- function(query = NULL,
 #'
 #' Retrieves a specific keyword from the Cristin registry.
 #'
-#' @param keyword_id Keyword identifier
+#' @param id Keyword identifier
 #'
 #' @return A list with the keyword record
 #'
@@ -64,14 +57,14 @@ nva_cristin_keywords <- function(query = NULL,
 #' \dontrun{
 #' keyword <- nva_cristin_keyword("12345")
 #' }
-nva_cristin_keyword <- function(keyword_id) {
-  if (missing(keyword_id) || is.null(keyword_id)) {
-    cli::cli_abort("{.arg keyword_id} is required.")
+nva_cristin_keyword <- function(id) {
+  if (missing(id) || is.null(id)) {
+    cli::cli_abort("{.arg id} is required.")
   }
 
-  keyword_id <- as.character(keyword_id)
+  id <- as.character(id)
 
-  nva_get(paste0("cristin/keyword/", keyword_id))
+  nva_get(paste0("cristin/keyword/", id))
 }
 
 #' Parse Cristin keyword search results
@@ -82,19 +75,17 @@ nva_cristin_keyword <- function(keyword_id) {
 #' @noRd
 nva_parse_cristin_keywords <- function(tbl) {
   tibble::tibble(
-    id = purrr::map_chr(tbl$id, \(x) {
-      sub(".*/cristin/keyword/", "", x)
-    }),
+    id = purrr::map_chr(tbl$id, \(x) nva_extract_id(x, "cristin/keyword")),
     label = tbl$label %||% NA_character_,
     language = tbl$language %||% NA_character_
   )
 }
 
-#' List funding sources from Cristin
+#' Search funding sources from Cristin
 #'
 #' Retrieves the list of available funding sources.
 #'
-#' @param results Number of results per page (default: 100)
+#' @param limit Number of results per page (default: 100)
 #' @param page Page number (default: 1)
 #'
 #' @return A tibble with columns:
@@ -108,24 +99,17 @@ nva_parse_cristin_keywords <- function(tbl) {
 #'
 #' @examples
 #' \dontrun{
-#' sources <- nva_cristin_funding_sources()
+#' sources <- nva_cristin_funding_source_search()
 #' }
-nva_cristin_funding_sources <- function(results = 100L, page = 1L) {
-  resp <- nva_request(
+nva_cristin_funding_source_search <- function(limit = 100L, page = 1L) {
+  tbl <- nva_get_tibble(
     "cristin/funding-sources",
-    results = results,
+    results = limit,
     page = page
-  ) |>
-    httr2::req_perform()
-
-  tbl <- nva_resp_body_tibble(resp)
+  )
 
   if (nrow(tbl) == 0) {
-    return(tibble::tibble(
-      id = character(),
-      name = character(),
-      acronym = character()
-    ))
+    return(schema_cristin_funding_source())
   }
 
   nva_parse_funding_sources(tbl)
@@ -135,7 +119,7 @@ nva_cristin_funding_sources <- function(results = 100L, page = 1L) {
 #'
 #' Retrieves information about a specific funding source by ID.
 #'
-#' @param source_id Funding source identifier
+#' @param id Funding source identifier
 #'
 #' @return A list with funding source details
 #'
@@ -145,14 +129,14 @@ nva_cristin_funding_sources <- function(results = 100L, page = 1L) {
 #' \dontrun{
 #' source <- nva_cristin_funding_source("NFR")
 #' }
-nva_cristin_funding_source <- function(source_id) {
-  if (missing(source_id) || is.null(source_id)) {
-    cli::cli_abort("{.arg source_id} is required.")
+nva_cristin_funding_source <- function(id) {
+  if (missing(id) || is.null(id)) {
+    cli::cli_abort("{.arg id} is required.")
   }
 
-  source_id <- as.character(source_id)
+  id <- as.character(id)
 
-  nva_get(paste0("cristin/funding-sources/", source_id))
+  nva_get(paste0("cristin/funding-sources/", id))
 }
 
 #' Parse funding sources response

@@ -4,10 +4,10 @@
 \alias{nva_cristin_project}
 \title{Get a Cristin project by ID}
 \usage{
-nva_cristin_project(project_id)
+nva_cristin_project(id)
 }
 \arguments{
-\item{project_id}{Cristin project identifier}
+\item{id}{Cristin project identifier}
 }
 \value{
 A list containing the project record with fields like title, status,

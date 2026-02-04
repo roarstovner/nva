@@ -4,10 +4,10 @@
 \alias{nva_publication}
 \title{Get a publication by identifier}
 \usage{
-nva_publication(identifier)
+nva_publication(id)
 }
 \arguments{
-\item{identifier}{Publication identifier (the UUID-based NVA ID)}
+\item{id}{Publication identifier (the UUID-based NVA ID)}
 }
 \value{
 A list containing the full publication record, including:

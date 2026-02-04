@@ -4,11 +4,11 @@
 #' a query string.
 #'
 #' @param query Search query string
-#' @param results Number of results to return per page (default: 10, max: 100)
-#' @param from Offset for pagination (default: 0)
+#' @param limit Number of results to return per page (default: 10, max: 100)
+#' @param offset Offset for pagination (default: 0)
 #' @param sort Sort order. One of "relevance" (default), "modifiedDate",
 #'   "createdDate", or "publishedDate"
-#' @param institution Filter by institution Cristin ID (e.g., "185" for UiO)
+#' @param organization Filter by organization Cristin ID (e.g., "185" for UiO)
 #' @param year Filter by publication year (e.g., 2024 or "2020-2024")
 #' @param type Filter by publication type (e.g., "AcademicArticle")
 #' @param fetch_all If TRUE, fetch all matching results (may be slow for large
@@ -34,16 +34,16 @@
 #' nva_search("climate change")
 #'
 #' # Search with filters
-#' nva_search("machine learning", year = 2024, results = 20)
+#' nva_search("machine learning", year = 2024, limit = 20)
 #'
-#' # Fetch all results for a specific institution
-#' nva_search("biodiversity", institution = "185", fetch_all = TRUE)
+#' # Fetch all results for a specific organization
+#' nva_search("biodiversity", organization = "185", fetch_all = TRUE)
 #' }
 nva_search <- function(query,
-                       results = 10L,
-                       from = 0L,
+                       limit = 10L,
+                       offset = 0L,
                        sort = c("relevance", "modifiedDate", "createdDate", "publishedDate"),
-                       institution = NULL,
+                       organization = NULL,
                        year = NULL,
                        type = NULL,
                        fetch_all = FALSE,
@@ -55,38 +55,27 @@ nva_search <- function(query,
       "search/resources",
       query = query,
       sort = sort,
-      institution = institution,
+      institution = organization,
       year = year,
       instanceType = type,
       results_per_page = 100L,
       max_results = max_results
     )
   } else {
-    resp <- nva_request(
+    tbl <- nva_get_tibble(
       "search/resources",
       query = query,
-      results = results,
-      from = from,
+      results = limit,
+      from = offset,
       sort = sort,
-      institution = institution,
+      institution = organization,
       year = year,
       instanceType = type
-    ) |>
-      httr2::req_perform()
-
-    tbl <- nva_resp_body_tibble(resp)
+    )
   }
 
   if (nrow(tbl) == 0) {
-    return(tibble::tibble(
-      identifier = character(),
-      title = character(),
-      type = character(),
-      year = integer(),
-      status = character(),
-      contributors = list(),
-      institutions = list()
-    ))
+    return(schema_publication_search())
   }
 
   nva_parse_search_results(tbl)
@@ -119,11 +108,7 @@ nva_parse_search_results <- function(tbl) {
     }),
     institutions = purrr::map(tbl$topLevelOrganizations, \(orgs) {
       if (is.null(orgs)) return(character())
-      purrr::map_chr(orgs, \(o) {
-        labels <- o$labels
-        if (is.null(labels)) return(NA_character_)
-        labels$en %||% labels$nb %||% labels$nn %||% NA_character_
-      })
+      purrr::map_chr(orgs, \(o) nva_get_label(o$labels))
     })
   )
 }

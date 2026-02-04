@@ -4,10 +4,10 @@
 \alias{nva_cristin_organization}
 \title{Get a Cristin organization by ID}
 \usage{
-nva_cristin_organization(cristin_id)
+nva_cristin_organization(id)
 }
 \arguments{
-\item{cristin_id}{Cristin organization identifier (numeric or character).
+\item{id}{Cristin organization identifier (numeric or character).
 Top-level institution IDs are typically 3 digits (e.g., "185" for UiO).}
 }
 \value{

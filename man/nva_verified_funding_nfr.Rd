@@ -2,42 +2,22 @@
 % Please edit documentation in R/verified-funding.R
 \name{nva_verified_funding_nfr}
 \alias{nva_verified_funding_nfr}
-\title{Search verified NFR funding}
+\title{Get a specific NFR funding record}
 \usage{
-nva_verified_funding_nfr(
-  query = NULL,
-  project_id = NULL,
-  results = 10L,
-  page = 1L
-)
+nva_verified_funding_nfr(id)
 }
 \arguments{
-\item{query}{Search query}
-
-\item{project_id}{NFR project ID}
-
-\item{results}{Number of results per page (default: 10)}
-
-\item{page}{Page number (default: 1)}
+\item{id}{NFR project identifier}
 }
 \value{
-A tibble with columns:
-\describe{
-\item{id}{NFR project identifier}
-\item{title}{Project title}
-\item{status}{Funding status}
-\item{amount}{Funding amount}
-}
+A list with NFR funding details including project info, participants, and amounts
 }
 \description{
-Search the Norwegian Research Council (NFR) verified funding registry.
+Retrieves details about a specific NFR funding record.
 }
 \examples{
 \dontrun{
-# Search for NFR funding by query
-nva_verified_funding_nfr(query = "climate")
-
-# Search by project ID
-nva_verified_funding_nfr(project_id = "123456")
+funding <- nva_verified_funding_nfr("123456")
+funding$title
 }
 }

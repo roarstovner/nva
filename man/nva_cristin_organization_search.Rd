@@ -7,7 +7,7 @@
 nva_cristin_organization_search(
   query = NULL,
   depth = c("top", "full"),
-  results = 10L,
+  limit = 10L,
   page = 1L
 )
 }
@@ -16,7 +16,7 @@ nva_cristin_organization_search(
 
 \item{depth}{Depth of subunits to include. One of "top" (default) or "full"}
 
-\item{results}{Number of results to return per page (default: 10, max: 100)}
+\item{limit}{Number of results to return per page (default: 10, max: 100)}
 
 \item{page}{Page number for pagination (default: 1)}
 }
@@ -26,6 +26,7 @@ A tibble with columns:
 \item{id}{Cristin organization ID}
 \item{name}{Organization name (prefers English, falls back to Norwegian)}
 \item{acronym}{Organization acronym}
+\item{country}{Country code}
 }
 }
 \description{
@@ -37,6 +38,6 @@ Search the Cristin organization registry by name.
 nva_cristin_organization_search("university")
 
 # Search with more results
-nva_cristin_organization_search("oslo", results = 20)
+nva_cristin_organization_search("oslo", limit = 20)
 }
 }

@@ -4,10 +4,10 @@
 \alias{nva_publication_files}
 \title{Get files associated with a publication}
 \usage{
-nva_publication_files(identifier)
+nva_publication_files(id)
 }
 \arguments{
-\item{identifier}{Publication identifier}
+\item{id}{Publication identifier}
 }
 \value{
 A tibble with file information:
@@ -17,7 +17,7 @@ A tibble with file information:
 \item{mimetype}{MIME type}
 \item{size}{File size in bytes}
 \item{license}{License URI if available}
-\item{administrativeAgreement}{Whether file is under admin agreement}
+\item{administrative_agreement}{Whether file is under admin agreement}
 }
 }
 \description{

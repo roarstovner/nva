@@ -4,10 +4,10 @@
 \alias{nva_cristin_person}
 \title{Get a Cristin person by ID}
 \usage{
-nva_cristin_person(cristin_id)
+nva_cristin_person(id)
 }
 \arguments{
-\item{cristin_id}{Cristin person identifier (numeric or character)}
+\item{id}{Cristin person identifier (numeric or character)}
 }
 \value{
 A list containing the person record:

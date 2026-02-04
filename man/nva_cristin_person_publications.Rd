@@ -5,20 +5,20 @@
 \title{Get publications for a Cristin person}
 \usage{
 nva_cristin_person_publications(
-  cristin_id,
-  results = 10L,
-  from = 0L,
+  id,
+  limit = 10L,
+  offset = 0L,
   year = NULL,
   fetch_all = FALSE,
   max_results = Inf
 )
 }
 \arguments{
-\item{cristin_id}{Cristin person identifier}
+\item{id}{Cristin person identifier}
 
-\item{results}{Number of results to return per page (default: 10, max: 100)}
+\item{limit}{Number of results to return per page (default: 10, max: 100)}
 
-\item{from}{Offset for pagination (default: 0)}
+\item{offset}{Offset for pagination (default: 0)}
 
 \item{year}{Filter by publication year}
 

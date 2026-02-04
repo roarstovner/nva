@@ -4,10 +4,10 @@
 \alias{nva_cristin_keyword}
 \title{Get a Cristin keyword by ID}
 \usage{
-nva_cristin_keyword(keyword_id)
+nva_cristin_keyword(id)
 }
 \arguments{
-\item{keyword_id}{Keyword identifier}
+\item{id}{Keyword identifier}
 }
 \value{
 A list with the keyword record

@@ -4,10 +4,10 @@
 \alias{nva_publications}
 \title{Get multiple publications by identifiers}
 \usage{
-nva_publications(identifiers)
+nva_publications(ids)
 }
 \arguments{
-\item{identifiers}{Character vector of publication identifiers}
+\item{ids}{Character vector of publication identifiers}
 }
 \value{
 A tibble with one row per publication containing:

@@ -5,9 +5,9 @@
 \title{Get publications for a Cristin organization}
 \usage{
 nva_cristin_organization_publications(
-  cristin_id,
-  results = 10L,
-  from = 0L,
+  id,
+  limit = 10L,
+  offset = 0L,
   year = NULL,
   type = NULL,
   fetch_all = FALSE,
@@ -15,11 +15,11 @@ nva_cristin_organization_publications(
 )
 }
 \arguments{
-\item{cristin_id}{Cristin organization identifier}
+\item{id}{Cristin organization identifier}
 
-\item{results}{Number of results to return per page (default: 10, max: 100)}
+\item{limit}{Number of results to return per page (default: 10, max: 100)}
 
-\item{from}{Offset for pagination (default: 0)}
+\item{offset}{Offset for pagination (default: 0)}
 
 \item{year}{Filter by publication year}
 

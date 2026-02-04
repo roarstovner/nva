@@ -2,7 +2,7 @@
 #'
 #' Retrieves information about an organization from the Cristin registry.
 #'
-#' @param cristin_id Cristin organization identifier (numeric or character).
+#' @param id Cristin organization identifier (numeric or character).
 #'   Top-level institution IDs are typically 3 digits (e.g., "185" for UiO).
 #'
 #' @return A list containing the organization record:
@@ -25,14 +25,14 @@
 #' # Get a department
 #' dept <- nva_cristin_organization("185.15.2.10")
 #' }
-nva_cristin_organization <- function(cristin_id) {
-  if (missing(cristin_id) || is.null(cristin_id)) {
-    cli::cli_abort("{.arg cristin_id} is required.")
+nva_cristin_organization <- function(id) {
+  if (missing(id) || is.null(id)) {
+    cli::cli_abort("{.arg id} is required.")
   }
 
-  cristin_id <- nva_normalize_org_id(cristin_id)
+  id <- nva_normalize_org_id(id)
 
-  nva_get(paste0("cristin/organization/", cristin_id))
+  nva_get(paste0("cristin/organization/", id))
 }
 
 #' Normalize Cristin organization ID to full format
@@ -58,7 +58,7 @@ nva_normalize_org_id <- function(id) {
 #'
 #' @param query Search query string (name or acronym)
 #' @param depth Depth of subunits to include. One of "top" (default) or "full"
-#' @param results Number of results to return per page (default: 10, max: 100)
+#' @param limit Number of results to return per page (default: 10, max: 100)
 #' @param page Page number for pagination (default: 1)
 #'
 #' @return A tibble with columns:
@@ -66,6 +66,7 @@ nva_normalize_org_id <- function(id) {
 #'   \item{id}{Cristin organization ID}
 #'   \item{name}{Organization name (prefers English, falls back to Norwegian)}
 #'   \item{acronym}{Organization acronym}
+#'   \item{country}{Country code}
 #' }
 #'
 #' @export
@@ -76,32 +77,24 @@ nva_normalize_org_id <- function(id) {
 #' nva_cristin_organization_search("university")
 #'
 #' # Search with more results
-#' nva_cristin_organization_search("oslo", results = 20)
+#' nva_cristin_organization_search("oslo", limit = 20)
 #' }
 nva_cristin_organization_search <- function(query = NULL,
                                              depth = c("top", "full"),
-                                             results = 10L,
+                                             limit = 10L,
                                              page = 1L) {
   depth <- rlang::arg_match(depth)
 
-  resp <- nva_request(
+  tbl <- nva_get_tibble(
     "cristin/organization",
     query = query,
     depth = depth,
-    results = results,
+    results = limit,
     page = page
-  ) |>
-    httr2::req_perform()
-
-  tbl <- nva_resp_body_tibble(resp)
+  )
 
   if (nrow(tbl) == 0) {
-    return(tibble::tibble(
-      id = character(),
-      name = character(),
-      acronym = character(),
-      country = character()
-    ))
+    return(schema_cristin_organization())
   }
 
   nva_parse_cristin_organizations(tbl)
@@ -115,15 +108,15 @@ nva_cristin_organization_search <- function(query = NULL,
 #' @noRd
 nva_parse_cristin_organizations <- function(tbl) {
   tibble::tibble(
-    id = purrr::map_chr(tbl$id, \(x) {
-      # Extract ID from URL like "https://api.nva.unit.no/cristin/organization/185.0.0.0"
-      sub(".*/cristin/organization/", "", x)
-    }),
-    name = purrr::map_chr(tbl$labels, \(x) {
-      x$en %||% x$nb %||% x$nn %||% NA_character_
-    }),
+    id = purrr::map_chr(tbl$id, \(x) nva_extract_id(x, "cristin/organization")),
+    name = purrr::map_chr(tbl$labels, nva_get_label),
     acronym = if ("acronym" %in% names(tbl)) {
       as.character(tbl$acronym)
+    } else {
+      rep(NA_character_, nrow(tbl))
+    },
+    country = if ("country" %in% names(tbl)) {
+      as.character(tbl$country)
     } else {
       rep(NA_character_, nrow(tbl))
     }
@@ -134,7 +127,7 @@ nva_parse_cristin_organizations <- function(tbl) {
 #'
 #' Retrieves the organizational hierarchy below a given organization.
 #'
-#' @param cristin_id Cristin organization identifier
+#' @param id Cristin organization identifier
 #' @param depth Maximum depth of subunits to retrieve (default: 1 for immediate children)
 #'
 #' @return A tibble with subunit information:
@@ -155,42 +148,28 @@ nva_parse_cristin_organizations <- function(tbl) {
 #' # Get deeper hierarchy (faculties and departments)
 #' all_units <- nva_cristin_organization_subunits(185, depth = 2)
 #' }
-nva_cristin_organization_subunits <- function(cristin_id, depth = 1L) {
-  if (missing(cristin_id) || is.null(cristin_id)) {
-    cli::cli_abort("{.arg cristin_id} is required.")
+nva_cristin_organization_subunits <- function(id, depth = 1L) {
+  if (missing(id) || is.null(id)) {
+    cli::cli_abort("{.arg id} is required.")
   }
 
-  # nva_cristin_organization already normalizes the ID
-  org <- nva_cristin_organization(cristin_id)
+  org <- nva_cristin_organization(id)
   subunits <- org$hasPart %||% list()
 
   if (length(subunits) == 0) {
-    return(tibble::tibble(
-      id = character(),
-      name = character(),
-      acronym = character(),
-      level = integer()
-    ))
+    return(schema_cristin_organization_subunit())
   }
 
   results <- list()
   results <- collect_subunits(subunits, level = 1L, depth = depth, results = results)
 
   if (length(results) == 0) {
-    return(tibble::tibble(
-      id = character(),
-      name = character(),
-      acronym = character(),
-      level = integer()
-    ))
+    return(schema_cristin_organization_subunit())
   }
 
   tibble::tibble(
     id = purrr::map_chr(results, \(x) as.character(x$id)),
-    name = purrr::map_chr(results, \(x) {
-      labels <- x$labels %||% list()
-      labels$en %||% labels$nb %||% labels$nn %||% NA_character_
-    }),
+    name = purrr::map_chr(results, \(x) nva_get_label(x$labels)),
     acronym = purrr::map_chr(results, \(x) x$acronym %||% NA_character_),
     level = purrr::map_int(results, \(x) x$level)
   )
@@ -221,9 +200,9 @@ collect_subunits <- function(subunits, level, depth, results) {
 #'
 #' Retrieves publications associated with a specific Cristin organization.
 #'
-#' @param cristin_id Cristin organization identifier
-#' @param results Number of results to return per page (default: 10, max: 100)
-#' @param from Offset for pagination (default: 0)
+#' @param id Cristin organization identifier
+#' @param limit Number of results to return per page (default: 10, max: 100)
+#' @param offset Offset for pagination (default: 0)
 #' @param year Filter by publication year
 #' @param type Filter by publication type
 #' @param fetch_all If TRUE, fetch all publications. Default: FALSE
@@ -241,52 +220,41 @@ collect_subunits <- function(subunits, level, depth, results) {
 #' # Get all publications from a department
 #' all_pubs <- nva_cristin_organization_publications("185.15.2.10", fetch_all = TRUE)
 #' }
-nva_cristin_organization_publications <- function(cristin_id,
-                                                   results = 10L,
-                                                   from = 0L,
+nva_cristin_organization_publications <- function(id,
+                                                   limit = 10L,
+                                                   offset = 0L,
                                                    year = NULL,
                                                    type = NULL,
                                                    fetch_all = FALSE,
                                                    max_results = Inf) {
-  if (missing(cristin_id) || is.null(cristin_id)) {
-    cli::cli_abort("{.arg cristin_id} is required.")
+  if (missing(id) || is.null(id)) {
+    cli::cli_abort("{.arg id} is required.")
   }
 
-  cristin_id <- as.character(cristin_id)
+  id <- as.character(id)
 
   if (fetch_all) {
     tbl <- nva_fetch_all(
       "search/resources",
-      institution = cristin_id,
+      institution = id,
       year = year,
       instanceType = type,
       results_per_page = 100L,
       max_results = max_results
     )
   } else {
-    resp <- nva_request(
+    tbl <- nva_get_tibble(
       "search/resources",
-      institution = cristin_id,
+      institution = id,
       year = year,
       instanceType = type,
-      results = results,
-      from = from
-    ) |>
-      httr2::req_perform()
-
-    tbl <- nva_resp_body_tibble(resp)
+      results = limit,
+      from = offset
+    )
   }
 
   if (nrow(tbl) == 0) {
-    return(tibble::tibble(
-      identifier = character(),
-      title = character(),
-      type = character(),
-      year = integer(),
-      status = character(),
-      contributors = list(),
-      institutions = list()
-    ))
+    return(schema_publication_search())
   }
 
   nva_parse_search_results(tbl)

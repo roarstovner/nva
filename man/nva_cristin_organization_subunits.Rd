@@ -4,10 +4,10 @@
 \alias{nva_cristin_organization_subunits}
 \title{Get subunits of a Cristin organization}
 \usage{
-nva_cristin_organization_subunits(cristin_id, depth = 1L)
+nva_cristin_organization_subunits(id, depth = 1L)
 }
 \arguments{
-\item{cristin_id}{Cristin organization identifier}
+\item{id}{Cristin organization identifier}
 
 \item{depth}{Maximum depth of subunits to retrieve (default: 1 for immediate children)}
 }

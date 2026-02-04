@@ -61,3 +61,18 @@ nva_get <- function(endpoint, ...) {
   resp <- httr2::req_perform(req)
   httr2::resp_body_json(resp)
 }
+
+#' Perform an NVA API request and return tibble
+#'
+#' Combines request, perform, and tibble conversion in one call.
+#'
+#' @param endpoint API endpoint path
+#' @param ... Additional query parameters
+#'
+#' @return A tibble from the API response
+#' @noRd
+nva_get_tibble <- function(endpoint, ...) {
+  nva_request(endpoint, ...) |>
+    httr2::req_perform() |>
+    nva_resp_body_tibble()
+}

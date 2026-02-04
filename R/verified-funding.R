@@ -3,8 +3,8 @@
 #' Search the Norwegian Research Council (NFR) verified funding registry.
 #'
 #' @param query Search query
-#' @param project_id NFR project ID
-#' @param results Number of results per page (default: 10)
+#' @param nfr_project_id NFR project ID
+#' @param limit Number of results per page (default: 10)
 #' @param page Page number (default: 1)
 #'
 #' @return A tibble with columns:
@@ -20,37 +20,29 @@
 #' @examples
 #' \dontrun{
 #' # Search for NFR funding by query
-#' nva_verified_funding_nfr(query = "climate")
+#' nva_verified_funding_nfr_search(query = "climate")
 #'
 #' # Search by project ID
-#' nva_verified_funding_nfr(project_id = "123456")
+#' nva_verified_funding_nfr_search(nfr_project_id = "123456")
 #' }
-nva_verified_funding_nfr <- function(query = NULL,
-                                      project_id = NULL,
-                                      results = 10L,
-                                      page = 1L) {
-  if (is.null(query) && is.null(project_id)) {
-    cli::cli_abort("At least one of {.arg query} or {.arg project_id} must be provided.")
+nva_verified_funding_nfr_search <- function(query = NULL,
+                                             nfr_project_id = NULL,
+                                             limit = 10L,
+                                             page = 1L) {
+  if (is.null(query) && is.null(nfr_project_id)) {
+    cli::cli_abort("At least one of {.arg query} or {.arg nfr_project_id} must be provided.")
   }
 
-  resp <- nva_request(
+  tbl <- nva_get_tibble(
     "verified-funding/nfr",
     query = query,
-    projectId = project_id,
-    results = results,
+    projectId = nfr_project_id,
+    results = limit,
     page = page
-  ) |>
-    httr2::req_perform()
-
-  tbl <- nva_resp_body_tibble(resp)
+  )
 
   if (nrow(tbl) == 0) {
-    return(tibble::tibble(
-      id = character(),
-      title = character(),
-      status = character(),
-      amount = numeric()
-    ))
+    return(schema_nfr_funding())
   }
 
   nva_parse_nfr_funding(tbl)
@@ -60,7 +52,7 @@ nva_verified_funding_nfr <- function(query = NULL,
 #'
 #' Retrieves details about a specific NFR funding record.
 #'
-#' @param nfr_id NFR project identifier
+#' @param id NFR project identifier
 #'
 #' @return A list with NFR funding details including project info, participants, and amounts
 #'
@@ -68,17 +60,17 @@ nva_verified_funding_nfr <- function(query = NULL,
 #'
 #' @examples
 #' \dontrun{
-#' funding <- nva_verified_funding_nfr_item("123456")
+#' funding <- nva_verified_funding_nfr("123456")
 #' funding$title
 #' }
-nva_verified_funding_nfr_item <- function(nfr_id) {
-  if (missing(nfr_id) || is.null(nfr_id)) {
-    cli::cli_abort("{.arg nfr_id} is required.")
+nva_verified_funding_nfr <- function(id) {
+  if (missing(id) || is.null(id)) {
+    cli::cli_abort("{.arg id} is required.")
   }
 
-  nfr_id <- as.character(nfr_id)
+  id <- as.character(id)
 
-  nva_get(paste0("verified-funding/nfr/", nfr_id))
+  nva_get(paste0("verified-funding/nfr/", id))
 }
 
 #' Parse NFR funding search results
@@ -91,7 +83,7 @@ nva_parse_nfr_funding <- function(tbl) {
   tibble::tibble(
     id = purrr::map_chr(tbl$id, \(x) {
       if (is.null(x)) return(NA_character_)
-      sub(".*/nfr/", "", x)
+      nva_extract_id(x, "nfr")
     }),
     title = purrr::map_chr(tbl$title, \(t) t %||% NA_character_),
     status = purrr::map_chr(tbl$status, \(s) s %||% NA_character_),

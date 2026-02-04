@@ -4,10 +4,10 @@
 \alias{nva_cristin_funding_source}
 \title{Get a specific funding source}
 \usage{
-nva_cristin_funding_source(source_id)
+nva_cristin_funding_source(id)
 }
 \arguments{
-\item{source_id}{Funding source identifier}
+\item{id}{Funding source identifier}
 }
 \value{
 A list with funding source details

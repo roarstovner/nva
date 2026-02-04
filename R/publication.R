@@ -2,7 +2,7 @@
 #'
 #' Retrieves detailed information about a single publication from the NVA API.
 #'
-#' @param identifier Publication identifier (the UUID-based NVA ID)
+#' @param id Publication identifier (the UUID-based NVA ID)
 #'
 #' @return A list containing the full publication record, including:
 #' \describe{
@@ -22,19 +22,19 @@
 #' # Access the title
 #' pub$entityDescription$mainTitle
 #' }
-nva_publication <- function(identifier) {
-  if (missing(identifier) || is.null(identifier) || !nzchar(identifier)) {
-    cli::cli_abort("{.arg identifier} must be a non-empty string.")
+nva_publication <- function(id) {
+  if (missing(id) || is.null(id) || !nzchar(id)) {
+    cli::cli_abort("{.arg id} must be a non-empty string.")
   }
 
-  nva_get(paste0("publication/", identifier))
+  nva_get(paste0("publication/", id))
 }
 
 #' Get multiple publications by identifiers
 #'
 #' Retrieves detailed information about multiple publications in a single call.
 #'
-#' @param identifiers Character vector of publication identifiers
+#' @param ids Character vector of publication identifiers
 #'
 #' @return A tibble with one row per publication containing:
 #' \describe{
@@ -56,16 +56,16 @@ nva_publication <- function(identifier) {
 #'          "01907b56-a6b0-7b8c-8f79-67890fedcba")
 #' pubs <- nva_publications(ids)
 #' }
-nva_publications <- function(identifiers) {
-  if (!is.character(identifiers) || length(identifiers) == 0) {
-    cli::cli_abort("{.arg identifiers} must be a non-empty character vector.")
+nva_publications <- function(ids) {
+  if (!is.character(ids) || length(ids) == 0) {
+    cli::cli_abort("{.arg ids} must be a non-empty character vector.")
   }
 
-  pubs <- purrr::map(identifiers, \(id) {
+  pubs <- purrr::map(ids, \(pub_id) {
     tryCatch(
-      nva_publication(id),
+      nva_publication(pub_id),
       error = function(e) {
-        cli::cli_warn("Failed to fetch publication {.val {id}}: {e$message}")
+        cli::cli_warn("Failed to fetch publication {.val {pub_id}}: {e$message}")
         NULL
       }
     )
@@ -74,15 +74,7 @@ nva_publications <- function(identifiers) {
   valid_pubs <- purrr::compact(pubs)
 
   if (length(valid_pubs) == 0) {
-    return(tibble::tibble(
-      identifier = character(),
-      title = character(),
-      type = character(),
-      year = integer(),
-      status = character(),
-      contributors = list(),
-      doi = character()
-    ))
+    return(schema_publication_detail())
   }
 
   nva_parse_publications(valid_pubs)
@@ -127,7 +119,7 @@ nva_parse_publications <- function(pubs) {
 #'
 #' Extracts file information from a publication record.
 #'
-#' @param identifier Publication identifier
+#' @param id Publication identifier
 #'
 #' @return A tibble with file information:
 #' \describe{
@@ -136,7 +128,7 @@ nva_parse_publications <- function(pubs) {
 #'   \item{mimetype}{MIME type}
 #'   \item{size}{File size in bytes}
 #'   \item{license}{License URI if available}
-#'   \item{administrativeAgreement}{Whether file is under admin agreement}
+#'   \item{administrative_agreement}{Whether file is under admin agreement}
 #' }
 #'
 #' @export
@@ -146,20 +138,13 @@ nva_parse_publications <- function(pubs) {
 #' # Get files for a publication
 #' files <- nva_publication_files("01907b56-a6b0-7b8c-8f79-12345abcdef")
 #' }
-nva_publication_files <- function(identifier) {
-  pub <- nva_publication(identifier)
+nva_publication_files <- function(id) {
+  pub <- nva_publication(id)
 
   artifacts <- pub$associatedArtifacts %||% list()
 
   if (length(artifacts) == 0) {
-    return(tibble::tibble(
-      identifier = character(),
-      name = character(),
-      mimetype = character(),
-      size = integer(),
-      license = character(),
-      administrativeAgreement = logical()
-    ))
+    return(schema_publication_file())
   }
 
   # Filter to only file types (exclude links)
@@ -169,14 +154,7 @@ nva_publication_files <- function(identifier) {
   })
 
   if (length(files) == 0) {
-    return(tibble::tibble(
-      identifier = character(),
-      name = character(),
-      mimetype = character(),
-      size = integer(),
-      license = character(),
-      administrativeAgreement = logical()
-    ))
+    return(schema_publication_file())
   }
 
   tibble::tibble(
@@ -185,7 +163,7 @@ nva_publication_files <- function(identifier) {
     mimetype = purrr::map_chr(files, \(x) x$mimeType %||% NA_character_),
     size = purrr::map_int(files, \(x) as.integer(x$size %||% NA_integer_)),
     license = purrr::map_chr(files, \(x) x$license %||% NA_character_),
-    administrativeAgreement = purrr::map_lgl(files, \(x) {
+    administrative_agreement = purrr::map_lgl(files, \(x) {
       isTRUE(x$administrativeAgreement)
     })
   )

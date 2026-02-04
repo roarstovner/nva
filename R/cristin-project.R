@@ -2,11 +2,11 @@
 #'
 #' Search the Cristin project registry.
 #'
-#' @param title Project title to search for
+#' @param query Project title to search for
 #' @param organization Cristin organization ID to filter by
 #' @param keyword Keyword to search for
 #' @param status Project status ("ACTIVE", "CONCLUDED", or "NOTSTARTED")
-#' @param results Number of results per page (default: 10)
+#' @param limit Number of results per page (default: 10)
 #' @param page Page number (default: 1)
 #'
 #' @return A tibble with columns:
@@ -14,8 +14,8 @@
 #'   \item{id}{Cristin project ID}
 #'   \item{title}{Project title}
 #'   \item{status}{Project status}
-#'   \item{startDate}{Project start date}
-#'   \item{endDate}{Project end date}
+#'   \item{start_date}{Project start date}
+#'   \item{end_date}{Project end date}
 #' }
 #'
 #' @export
@@ -23,42 +23,33 @@
 #' @examples
 #' \dontrun{
 #' # Search for projects by title
-#' nva_cristin_projects(title = "climate")
+#' nva_cristin_project_search(query = "climate")
 #'
 #' # Search for active projects
-#' nva_cristin_projects(status = "ACTIVE")
+#' nva_cristin_project_search(status = "ACTIVE")
 #' }
-nva_cristin_projects <- function(title = NULL,
-                                  organization = NULL,
-                                  keyword = NULL,
-                                  status = NULL,
-                                  results = 10L,
-                                  page = 1L) {
-  if (is.null(title) && is.null(organization) && is.null(keyword) && is.null(status)) {
+nva_cristin_project_search <- function(query = NULL,
+                                        organization = NULL,
+                                        keyword = NULL,
+                                        status = NULL,
+                                        limit = 10L,
+                                        page = 1L) {
+  if (is.null(query) && is.null(organization) && is.null(keyword) && is.null(status)) {
     cli::cli_abort("At least one search parameter must be provided.")
   }
 
-  resp <- nva_request(
+  tbl <- nva_get_tibble(
     "cristin/project",
-    title = title,
+    title = query,
     institution = organization,
     keyword = keyword,
     status = status,
-    results = results,
+    results = limit,
     page = page
-  ) |>
-    httr2::req_perform()
-
-  tbl <- nva_resp_body_tibble(resp)
+  )
 
   if (nrow(tbl) == 0) {
-    return(tibble::tibble(
-      id = character(),
-      title = character(),
-      status = character(),
-      startDate = character(),
-      endDate = character()
-    ))
+    return(schema_cristin_project())
   }
 
   nva_parse_cristin_projects(tbl)
@@ -68,7 +59,7 @@ nva_cristin_projects <- function(title = NULL,
 #'
 #' Retrieves information about a specific project from the Cristin registry.
 #'
-#' @param project_id Cristin project identifier
+#' @param id Cristin project identifier
 #'
 #' @return A list containing the project record with fields like title, status,
 #'   participants, funding, etc.
@@ -80,14 +71,14 @@ nva_cristin_projects <- function(title = NULL,
 #' project <- nva_cristin_project(123456)
 #' project$title
 #' }
-nva_cristin_project <- function(project_id) {
-  if (missing(project_id) || is.null(project_id)) {
-    cli::cli_abort("{.arg project_id} is required.")
+nva_cristin_project <- function(id) {
+  if (missing(id) || is.null(id)) {
+    cli::cli_abort("{.arg id} is required.")
   }
 
-  project_id <- as.character(project_id)
+  id <- as.character(id)
 
-  nva_get(paste0("cristin/project/", project_id))
+  nva_get(paste0("cristin/project/", id))
 }
 
 #' Parse Cristin project search results
@@ -98,16 +89,13 @@ nva_cristin_project <- function(project_id) {
 #' @noRd
 nva_parse_cristin_projects <- function(tbl) {
   tibble::tibble(
-    id = purrr::map_chr(tbl$id, \(x) {
-      sub(".*/cristin/project/", "", x)
-    }),
+    id = purrr::map_chr(tbl$id, \(x) nva_extract_id(x, "cristin/project")),
     title = purrr::map_chr(tbl$title, \(titles) {
       if (is.null(titles) || length(titles) == 0) return(NA_character_)
-      # titles is a named list with language codes
       titles[[1]] %||% NA_character_
     }),
     status = tbl$status %||% NA_character_,
-    startDate = purrr::map_chr(tbl$startDate, \(d) d %||% NA_character_),
-    endDate = purrr::map_chr(tbl$endDate, \(d) d %||% NA_character_)
+    start_date = purrr::map_chr(tbl$startDate, \(d) d %||% NA_character_),
+    end_date = purrr::map_chr(tbl$endDate, \(d) d %||% NA_character_)
   )
 }
