@@ -168,3 +168,65 @@ nva_publication_files <- function(id) {
     })
   )
 }
+
+#' Download a file from a publication
+#'
+#' Downloads a file associated with a publication to a local path.
+#'
+#' @param file_id File identifier (from `nva_publication_files()`)
+#' @param destfile Destination file path. If NULL, uses the original filename
+#'   in the current working directory.
+#' @param overwrite Logical. Should existing files be overwritten? Default FALSE.
+#' @param progress Logical. Show download progress bar? Default TRUE for
+#'
+#' @return Invisibly returns the path to the downloaded file.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Get files for a publication
+#' files <- nva_publication_files("01907b56-a6b0-7b8c-8f79-12345abcdef")
+#'
+#' # Download the first file
+#' nva_download_file(files$identifier[1], destfile = "paper.pdf")
+#'
+#' # Download with original filename
+#' nva_download_file(files$identifier[1])
+#' }
+nva_download_file <- function(file_id, destfile = NULL, overwrite = FALSE,
+                              progress = TRUE) {
+  if (missing(file_id) || is.null(file_id) || !nzchar(file_id)) {
+    cli::cli_abort("{.arg file_id} must be a non-empty string.")
+  }
+
+  if (is.null(destfile)) {
+    cli::cli_abort(
+      "{.arg destfile} must be specified (automatic filename detection not yet supported)."
+    )
+  }
+
+  if (file.exists(destfile) && !overwrite) {
+    cli::cli_abort(
+      c("File {.path {destfile}} already exists.",
+        "i" = "Use {.code overwrite = TRUE} to overwrite.")
+    )
+  }
+
+  req <- httr2::request("https://api.nva.unit.no") |>
+    httr2::req_url_path_append("download", "public", file_id) |>
+    httr2::req_user_agent("nva R package (https://github.com/ropensci/nva)") |>
+    httr2::req_retry(
+      max_tries = 3,
+      is_transient = \(resp) httr2::resp_status(resp) %in% c(429L, 503L)
+    )
+
+  if (progress) {
+    req <- httr2::req_progress(req)
+  }
+
+  httr2::req_perform(req, path = destfile)
+
+  cli::cli_alert_success("Downloaded to {.path {destfile}}")
+  invisible(destfile)
+}

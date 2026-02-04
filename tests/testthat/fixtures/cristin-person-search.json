@@ -1,0 +1,49 @@
+{
+  "hits": [
+    {
+      "id": "https://api.nva.unit.no/cristin/person/12345",
+      "names": [
+        {
+          "type": "FirstName",
+          "value": "Ola"
+        },
+        {
+          "type": "LastName",
+          "value": "Nordmann"
+        }
+      ],
+      "affiliations": [
+        {
+          "organization": "https://api.nva.unit.no/cristin/organization/185.0.0.0",
+          "active": true
+        }
+      ]
+    },
+    {
+      "id": "https://api.nva.unit.no/cristin/person/67890",
+      "names": [
+        {
+          "type": "FirstName",
+          "value": "Kari"
+        },
+        {
+          "type": "LastName",
+          "value": "Hansen"
+        }
+      ],
+      "affiliations": [
+        {
+          "organization": "https://api.nva.unit.no/cristin/organization/194.0.0.0",
+          "active": true
+        },
+        {
+          "organization": "https://api.nva.unit.no/cristin/organization/185.0.0.0",
+          "active": false
+        }
+      ]
+    }
+  ],
+  "totalHits": 2,
+  "size": 2,
+  "offset": 0
+}

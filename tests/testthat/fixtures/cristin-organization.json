@@ -1,5 +1,5 @@
 {
-  "id": "185.90.0.0",
+  "id": "https://api.nva.unit.no/cristin/organization/185.0.0.0",
   "type": "Organization",
   "identifier": [
     {
@@ -7,26 +7,38 @@
       "value": "185"
     }
   ],
-  "name": {
-    "en": "OsloMet - Oslo Metropolitan University",
-    "nb": "OsloMet - storbyuniversitetet"
+  "labels": {
+    "en": "University of Oslo",
+    "nb": "Universitetet i Oslo"
   },
-  "acronym": "OsloMet",
+  "acronym": "UiO",
   "country": "NO",
   "partOf": [],
   "hasPart": [
     {
-      "id": "185.90.1.0",
+      "id": "185.15.0.0",
       "type": "Organization",
-      "name": {
-        "en": "Faculty of Social Sciences"
-      }
+      "labels": {
+        "en": "Faculty of Mathematics and Natural Sciences",
+        "nb": "Det matematisk-naturvitenskapelige fakultet"
+      },
+      "acronym": "MN",
+      "hasPart": [
+        {
+          "id": "185.15.2.0",
+          "type": "Organization",
+          "labels": {
+            "en": "Department of Informatics"
+          },
+          "acronym": "IFI"
+        }
+      ]
     },
     {
-      "id": "185.90.2.0",
+      "id": "185.10.0.0",
       "type": "Organization",
-      "name": {
-        "en": "Faculty of Technology, Art and Design"
+      "labels": {
+        "en": "Faculty of Social Sciences"
       }
     }
   ]

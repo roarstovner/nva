@@ -1,46 +1,54 @@
 {
   "identifier": "01907b5e-1234-5678-abcd-123456789abc",
   "type": "Publication",
-  "status": "Published",
-  "title": {
-    "en": "A Comprehensive Study of Testing in R"
-  },
-  "abstract": {
-    "en": "This is an abstract for the test publication."
-  },
-  "publicationDate": {
-    "year": "2024",
-    "month": "06",
-    "day": "15"
-  },
-  "contributors": [
-    {
-      "identity": {
-        "id": "https://api.cristin.no/v2/persons/12345",
-        "name": "Test Author",
-        "orcid": "0000-0001-2345-6789"
-      },
-      "affiliations": [
-        {
-          "id": "https://api.cristin.no/v2/units/185.90.0.0",
-          "name": {
-            "en": "OsloMet - Oslo Metropolitan University"
-          }
-        }
-      ],
-      "role": "Creator"
-    }
-  ],
+  "status": "PUBLISHED",
   "entityDescription": {
-    "publicationInstance": {
-      "type": "AcademicArticle"
-    },
+    "mainTitle": "A Comprehensive Study of Testing in R",
     "reference": {
+      "publicationInstance": {
+        "type": "AcademicArticle"
+      },
       "publicationContext": {
         "type": "Journal",
         "name": "Journal of Statistical Software"
       },
-      "doi": "10.18637/jss.v000.i00"
+      "doi": "https://doi.org/10.18637/jss.v000.i00"
+    },
+    "publicationDate": {
+      "year": "2024",
+      "month": "06",
+      "day": "15"
+    },
+    "contributors": [
+      {
+        "identity": {
+          "id": "https://api.cristin.no/v2/persons/12345",
+          "name": "Test Author",
+          "orcid": "0000-0001-2345-6789"
+        },
+        "affiliations": [
+          {
+            "id": "https://api.cristin.no/v2/units/185.90.0.0",
+            "name": {
+              "en": "OsloMet - Oslo Metropolitan University"
+            }
+          }
+        ],
+        "role": {
+          "type": "Creator"
+        }
+      },
+      {
+        "identity": {
+          "name": "Second Author"
+        },
+        "role": {
+          "type": "Creator"
+        }
+      }
+    ],
+    "abstract": {
+      "en": "This is an abstract for the test publication."
     }
   },
   "associatedArtifacts": [
@@ -49,7 +57,22 @@
       "identifier": "file-uuid-1234",
       "name": "manuscript.pdf",
       "mimeType": "application/pdf",
-      "size": 1234567
+      "size": 1234567,
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "administrativeAgreement": false
+    },
+    {
+      "type": "Link",
+      "identifier": "link-uuid-5678",
+      "id": "https://example.com/supplementary"
+    }
+  ],
+  "topLevelOrganizations": [
+    {
+      "labels": {
+        "en": "OsloMet - Oslo Metropolitan University",
+        "nb": "OsloMet - storbyuniversitetet"
+      }
     }
   ]
 }

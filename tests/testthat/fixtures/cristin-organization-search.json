@@ -1,0 +1,32 @@
+{
+  "hits": [
+    {
+      "id": "https://api.nva.unit.no/cristin/organization/185.0.0.0",
+      "labels": {
+        "en": "University of Oslo",
+        "nb": "Universitetet i Oslo"
+      },
+      "acronym": "UiO",
+      "country": "NO"
+    },
+    {
+      "id": "https://api.nva.unit.no/cristin/organization/186.0.0.0",
+      "labels": {
+        "nb": "OsloMet - storbyuniversitetet"
+      },
+      "acronym": "OsloMet",
+      "country": "NO"
+    },
+    {
+      "id": "https://api.nva.unit.no/cristin/organization/7465.0.0.0",
+      "labels": {
+        "en": "Oslo University Hospital",
+        "nb": "Oslo universitetssykehus"
+      },
+      "country": "NO"
+    }
+  ],
+  "totalHits": 3,
+  "size": 3,
+  "offset": 0
+}

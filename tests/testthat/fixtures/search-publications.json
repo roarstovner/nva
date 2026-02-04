@@ -2,37 +2,77 @@
   "hits": [
     {
       "identifier": "01907b5e-1234-5678-abcd-123456789abc",
-      "type": "Publication",
-      "title": {
-        "en": "Test Publication Title"
-      },
-      "publicationDate": {
-        "year": "2024",
-        "month": "06",
-        "day": "15"
-      },
-      "contributors": [
-        {
-          "identity": {
-            "name": "Test Author"
-          },
-          "affiliations": [
-            {
-              "name": {
-                "en": "Test University"
-              }
-            }
-          ]
-        }
-      ],
+      "status": "PUBLISHED",
       "entityDescription": {
-        "publicationInstance": {
-          "type": "AcademicArticle"
+        "mainTitle": "Climate Change Impacts on Arctic Ecosystems",
+        "reference": {
+          "publicationInstance": {
+            "type": "AcademicArticle"
+          }
+        },
+        "publicationDate": {
+          "year": "2024",
+          "month": "06",
+          "day": "15"
+        },
+        "contributorsPreview": [
+          {
+            "identity": {
+              "name": "Ola Nordmann"
+            }
+          },
+          {
+            "identity": {
+              "name": "Kari Hansen"
+            }
+          }
+        ]
+      },
+      "topLevelOrganizations": [
+        {
+          "labels": {
+            "en": "University of Oslo",
+            "nb": "Universitetet i Oslo"
+          }
         }
-      }
+      ]
+    },
+    {
+      "identifier": "01907b5e-9999-8888-7777-666655554444",
+      "status": "PUBLISHED",
+      "entityDescription": {
+        "mainTitle": "Machine Learning in Climate Science",
+        "reference": {
+          "publicationInstance": {
+            "type": "AcademicChapter"
+          }
+        },
+        "publicationDate": {
+          "year": "2023"
+        },
+        "contributors": [
+          {
+            "identity": {
+              "name": "Per Olsen"
+            }
+          }
+        ]
+      },
+      "topLevelOrganizations": [
+        {
+          "labels": {
+            "nb": "OsloMet"
+          }
+        },
+        {
+          "labels": {
+            "en": "Norwegian Institute of Public Health"
+          }
+        }
+      ]
     }
   ],
-  "totalHits": 1,
-  "size": 1,
+  "totalHits": 150,
+  "size": 2,
   "offset": 0
 }

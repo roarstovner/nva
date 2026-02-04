@@ -7,6 +7,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- Create nva R package wrapping the NVA API (#1)
+- Add documentation and tests (#6)
+- Add file download support (nva_download_file) (#5)
+- Add tests for Cristin organization endpoints (#11)
+- Add tests for Cristin person endpoints (#10)
+- Add tests for publication endpoints (#9)
+- Add tests for nva_search (#8)
 - Utility functions: `nva_extract_id()`, `nva_get_label()`, `nva_empty_tibble()`, `nva_get_tibble()` (#12)
 - Schema functions for consistent empty result structures (#12)
 - Set up testthat infrastructure and mock helpers (#7)
