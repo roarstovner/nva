@@ -77,6 +77,18 @@ schema_cristin_person <- function() {
 }
 
 #' @noRd
+schema_cristin_person_detail <- function() {
+  nva_empty_tibble(
+    id = "chr",
+    first_name = "chr",
+    last_name = "chr",
+    preferred_first_name = "chr",
+    orcid = "chr",
+    affiliations = "list"
+  )
+}
+
+#' @noRd
 schema_cristin_project <- function() {
   nva_empty_tibble(
     id = "chr",

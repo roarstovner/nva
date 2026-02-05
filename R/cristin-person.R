@@ -32,6 +32,101 @@ nva_cristin_person <- function(id) {
   nva_get(paste0("cristin/person/", id))
 }
 
+#' Get multiple Cristin persons by identifiers
+#'
+#' Retrieves detailed information about multiple persons from the single-item
+#' endpoint. Returns a tibble with the full person record, including ORCID
+#' and preferred name — fields not available from the search endpoint.
+#'
+#' @param ids Character or numeric vector of Cristin person identifiers
+#'
+#' @return A tibble with columns:
+#' \describe{
+#'   \item{id}{Cristin person ID}
+#'   \item{first_name}{First name}
+#'   \item{last_name}{Last name}
+#'   \item{preferred_first_name}{Preferred first name, if available}
+#'   \item{orcid}{ORCID identifier, if available}
+#'   \item{affiliations}{List of affiliations with organization ID and active status}
+#' }
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Get a single person as a tibble
+#' nva_cristin_persons(788603)
+#'
+#' # Get multiple persons
+#' nva_cristin_persons(c(788603, 12345))
+#' }
+nva_cristin_persons <- function(ids) {
+  if (!is.character(ids) && !is.numeric(ids)) {
+    cli::cli_abort("{.arg ids} must be a character or numeric vector.")
+  }
+  if (length(ids) == 0) {
+    cli::cli_abort("{.arg ids} must be a non-empty vector.")
+  }
+
+  ids <- as.character(ids)
+
+  persons <- purrr::map(ids, \(id) {
+    tryCatch(
+      nva_cristin_person(id),
+      error = function(e) {
+        cli::cli_warn("Failed to fetch person {.val {id}}: {e$message}")
+        NULL
+      }
+    )
+  })
+
+  valid_persons <- purrr::compact(persons)
+
+  if (length(valid_persons) == 0) {
+    return(schema_cristin_person_detail())
+  }
+
+  nva_parse_cristin_person_details(valid_persons)
+}
+
+#' Parse Cristin person detail records into tibble
+#'
+#' @param persons List of person records from the single-item API
+#'
+#' @return Cleaned tibble
+#' @noRd
+nva_parse_cristin_person_details <- function(persons) {
+  tibble::tibble(
+    id = purrr::map_chr(persons, \(p) nva_extract_id(p$id, "cristin/person")),
+    first_name = purrr::map_chr(persons, \(p) {
+      match <- purrr::keep(p$names, \(n) n$type == "FirstName")
+      if (length(match) > 0) match[[1]]$value else NA_character_
+    }),
+    last_name = purrr::map_chr(persons, \(p) {
+      match <- purrr::keep(p$names, \(n) n$type == "LastName")
+      if (length(match) > 0) match[[1]]$value else NA_character_
+    }),
+    preferred_first_name = purrr::map_chr(persons, \(p) {
+      match <- purrr::keep(p$names, \(n) n$type == "PreferredFirstName")
+      if (length(match) > 0) match[[1]]$value else NA_character_
+    }),
+    orcid = purrr::map_chr(persons, \(p) {
+      match <- purrr::keep(p$identifiers %||% list(), \(i) i$type == "ORCID")
+      if (length(match) > 0) match[[1]]$value else NA_character_
+    }),
+    affiliations = purrr::map(persons, \(p) {
+      affs <- p$affiliations %||% list()
+      if (length(affs) == 0) return(list())
+      purrr::map(affs, \(a) {
+        list(
+          organization = nva_extract_id(a$organization %||% "", "cristin/organization"),
+          active = a$active %||% NA
+        )
+      })
+    })
+  )
+}
+
 #' Search for Cristin persons
 #'
 #' Search the Cristin person registry by name or other criteria.

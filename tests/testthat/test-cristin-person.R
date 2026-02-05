@@ -37,6 +37,86 @@ test_that("nva_cristin_person accepts numeric or character id", {
   expect_true(grepl("cristin/person/12345", captured_req$url))
 })
 
+# -- nva_cristin_persons() tests --
+
+test_that("nva_cristin_persons returns tibble with expected columns", {
+  local_mock_nva(mock_from_fixture("cristin-person.json"))
+
+  result <- nva_cristin_persons("12345")
+
+  expect_s3_class(result, "tbl_df")
+  expect_named(result, c("id", "first_name", "last_name", "preferred_first_name",
+                         "orcid", "affiliations"))
+})
+
+test_that("nva_cristin_persons parses data correctly", {
+  local_mock_nva(mock_from_fixture("cristin-person.json"))
+
+  result <- nva_cristin_persons("12345")
+
+  expect_equal(nrow(result), 1)
+  expect_equal(result$id[1], "12345")
+  expect_equal(result$first_name[1], "Test")
+  expect_equal(result$last_name[1], "Person")
+  expect_equal(result$preferred_first_name[1], "Tester")
+  expect_equal(result$orcid[1], "0000-0001-2345-6789")
+  expect_length(result$affiliations[[1]], 1)
+  expect_equal(result$affiliations[[1]][[1]]$organization, "185.90.0.0")
+  expect_true(result$affiliations[[1]][[1]]$active)
+})
+
+test_that("nva_cristin_persons accepts numeric ids", {
+  local_mock_nva(mock_from_fixture("cristin-person.json"))
+
+  result <- nva_cristin_persons(12345)
+
+  expect_s3_class(result, "tbl_df")
+  expect_equal(nrow(result), 1)
+})
+
+test_that("nva_cristin_persons errors on invalid input", {
+  expect_error(nva_cristin_persons(character()), class = "rlang_error")
+  expect_error(nva_cristin_persons(list()), class = "rlang_error")
+})
+
+test_that("nva_cristin_persons returns empty schema on all failures", {
+  mock_404 <- function(req) {
+    mock_error_response(404L, "Not found", url = req$url)
+  }
+
+  result <- suppressWarnings(
+    with_mock_nva(mock_404, {
+      nva_cristin_persons(c("invalid-1", "invalid-2"))
+    })
+  )
+
+  expect_s3_class(result, "tbl_df")
+  expect_equal(nrow(result), 0)
+  expect_named(result, c("id", "first_name", "last_name", "preferred_first_name",
+                         "orcid", "affiliations"))
+})
+
+test_that("nva_cristin_persons skips failed fetches and returns rest", {
+  call_count <- 0L
+  mock_fn <- function(req) {
+    call_count <<- call_count + 1L
+    if (call_count == 1L) {
+      return(mock_error_response(404L, "Not found", url = req$url))
+    }
+    body <- load_fixture("cristin-person.json")
+    mock_json_response(body, url = req$url)
+  }
+
+  result <- suppressWarnings(
+    with_mock_nva(mock_fn, {
+      nva_cristin_persons(c("bad-id", "12345"))
+    })
+  )
+
+  expect_equal(nrow(result), 1)
+  expect_equal(result$id[1], "12345")
+})
+
 # -- nva_cristin_person_search() tests --
 
 test_that("nva_cristin_person_search returns tibble with expected columns", {
