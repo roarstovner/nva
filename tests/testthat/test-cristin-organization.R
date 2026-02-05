@@ -46,6 +46,93 @@ test_that("nva_cristin_organization normalizes short IDs", {
   expect_true(grepl("cristin/organization/185.15.2.10", captured_req$url))
 })
 
+# -- nva_cristin_organizations() tests --
+
+test_that("nva_cristin_organizations returns tibble with expected columns", {
+  local_mock_nva(mock_from_fixture("cristin-organization.json"))
+
+  result <- nva_cristin_organizations("185")
+
+  expect_s3_class(result, "tbl_df")
+  expect_named(result, c("id", "name", "acronym", "country", "parent_id"))
+})
+
+test_that("nva_cristin_organizations parses data correctly", {
+  local_mock_nva(mock_from_fixture("cristin-organization.json"))
+
+  result <- nva_cristin_organizations("185")
+
+  expect_equal(nrow(result), 1)
+  expect_equal(result$id[1], "185.0.0.0")
+  expect_equal(result$name[1], "University of Oslo")
+  expect_equal(result$acronym[1], "UiO")
+  expect_equal(result$country[1], "NO")
+  expect_true(is.na(result$parent_id[1]))  # Top-level org has no parent
+})
+
+test_that("nva_cristin_organizations accepts numeric ids", {
+  local_mock_nva(mock_from_fixture("cristin-organization.json"))
+
+  result <- nva_cristin_organizations(185)
+
+  expect_s3_class(result, "tbl_df")
+  expect_equal(nrow(result), 1)
+})
+
+test_that("nva_cristin_organizations errors on invalid input", {
+  expect_error(nva_cristin_organizations(character()), class = "rlang_error")
+  expect_error(nva_cristin_organizations(list()), class = "rlang_error")
+})
+
+test_that("nva_cristin_organizations handles multiple IDs", {
+  local_mock_nva(mock_from_fixture("cristin-organization.json"))
+
+  result <- nva_cristin_organizations(c("185", "194"))
+
+  expect_s3_class(result, "tbl_df")
+  expect_equal(nrow(result), 2)
+})
+
+test_that("nva_cristin_organizations handles errors gracefully", {
+  call_count <- 0
+  mock_fn <- function(req) {
+    call_count <<- call_count + 1
+    if (call_count == 1) {
+      # First call fails
+      httr2::response(status_code = 404)
+    } else {
+      # Second call succeeds
+      body <- load_fixture("cristin-organization.json")
+      mock_json_response(body, url = req$url)
+    }
+  }
+
+  expect_warning(
+    with_mock_nva(mock_fn, {
+      result <- nva_cristin_organizations(c("999", "185"))
+      expect_equal(nrow(result), 1)
+      expect_equal(result$id[1], "185.0.0.0")
+    }),
+    "Failed to fetch organization"
+  )
+})
+
+test_that("nva_cristin_organizations returns empty schema when all fail", {
+  mock_fn <- function(req) {
+    httr2::response(status_code = 404)
+  }
+
+  expect_warning(
+    with_mock_nva(mock_fn, {
+      result <- nva_cristin_organizations("999")
+      expect_s3_class(result, "tbl_df")
+      expect_equal(nrow(result), 0)
+      expect_named(result, c("id", "name", "acronym", "country", "parent_id"))
+    }),
+    "Failed to fetch organization"
+  )
+})
+
 # -- nva_cristin_organization_search() tests --
 
 test_that("nva_cristin_organization_search returns tibble with expected columns", {

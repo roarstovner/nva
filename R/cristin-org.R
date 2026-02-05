@@ -35,6 +35,83 @@ nva_cristin_organization <- function(id) {
   nva_get(paste0("cristin/organization/", id))
 }
 
+#' Get multiple Cristin organizations by identifiers
+#'
+#' Retrieves detailed information about multiple organizations from the single-item
+#' endpoint. Returns a tibble with the full organization record.
+#'
+#' @param ids Character or numeric vector of Cristin organization identifiers
+#'
+#' @return A tibble with columns:
+#' \describe{
+#'   \item{id}{Cristin organization ID}
+#'   \item{name}{Organization name (prefers English, falls back to Norwegian)}
+#'   \item{acronym}{Organization acronym}
+#'   \item{country}{Country code}
+#'   \item{parent_id}{Parent organization ID, if applicable}
+#' }
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Get a single organization as a tibble
+#' nva_cristin_organizations(185)
+#'
+#' # Get multiple organizations
+#' nva_cristin_organizations(c(185, 194))
+#' }
+nva_cristin_organizations <- function(ids) {
+  if (!is.character(ids) && !is.numeric(ids)) {
+    cli::cli_abort("{.arg ids} must be a character or numeric vector.")
+  }
+  if (length(ids) == 0) {
+    cli::cli_abort("{.arg ids} must be a non-empty vector.")
+  }
+
+  ids <- as.character(ids)
+
+  orgs <- purrr::map(ids, \(id) {
+    tryCatch(
+      nva_cristin_organization(id),
+      error = function(e) {
+        cli::cli_warn("Failed to fetch organization {.val {id}}: {e$message}")
+        NULL
+      }
+    )
+  })
+
+  valid_orgs <- purrr::compact(orgs)
+
+  if (length(valid_orgs) == 0) {
+    return(schema_cristin_organization_detail())
+  }
+
+  nva_parse_cristin_organization_details(valid_orgs)
+}
+
+#' Parse Cristin organization detail records into tibble
+#'
+#' @param orgs List of organization records from the single-item API
+#'
+#' @return Cleaned tibble
+#' @noRd
+nva_parse_cristin_organization_details <- function(orgs) {
+  tibble::tibble(
+    id = purrr::map_chr(orgs, \(o) nva_extract_id(o$id, "cristin/organization")),
+    name = purrr::map_chr(orgs, \(o) nva_get_label(o$labels)),
+    acronym = purrr::map_chr(orgs, \(o) o$acronym %||% NA_character_),
+    country = purrr::map_chr(orgs, \(o) o$country %||% NA_character_),
+    parent_id = purrr::map_chr(orgs, \(o) {
+      if (!is.null(o$partOf) && length(o$partOf) > 0) {
+        nva_extract_id(o$partOf[[1]]$id, "cristin/organization")
+      } else {
+        NA_character_
+      }
+    })
+  )
+}
+
 #' Normalize Cristin organization ID to full format
 #'
 #' Converts short IDs (e.g., "185") to full format (e.g., "185.0.0.0")

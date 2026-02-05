@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- Add plural tibble getters for organizations and projects to match nva_cristin_persons pattern (#35)
 - Add comprehensive test coverage for all endpoints (#24)
 - Create nva R package wrapping the NVA API (#1)
 - Add documentation and tests (#6)

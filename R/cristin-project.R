@@ -81,6 +81,88 @@ nva_cristin_project <- function(id) {
   nva_get(paste0("cristin/project/", id))
 }
 
+#' Get multiple Cristin projects by identifiers
+#'
+#' Retrieves detailed information about multiple projects from the single-item
+#' endpoint. Returns a tibble with the full project record.
+#'
+#' @param ids Character or numeric vector of Cristin project identifiers
+#'
+#' @return A tibble with columns:
+#' \describe{
+#'   \item{id}{Cristin project ID}
+#'   \item{title}{Project title}
+#'   \item{status}{Project status}
+#'   \item{start_date}{Project start date}
+#'   \item{end_date}{Project end date}
+#'   \item{coordinating_institution}{Cristin ID of coordinating institution}
+#' }
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Get a single project as a tibble
+#' nva_cristin_projects(123456)
+#'
+#' # Get multiple projects
+#' nva_cristin_projects(c(123456, 789012))
+#' }
+nva_cristin_projects <- function(ids) {
+  if (!is.character(ids) && !is.numeric(ids)) {
+    cli::cli_abort("{.arg ids} must be a character or numeric vector.")
+  }
+  if (length(ids) == 0) {
+    cli::cli_abort("{.arg ids} must be a non-empty vector.")
+  }
+
+  ids <- as.character(ids)
+
+  projects <- purrr::map(ids, \(id) {
+    tryCatch(
+      nva_cristin_project(id),
+      error = function(e) {
+        cli::cli_warn("Failed to fetch project {.val {id}}: {e$message}")
+        NULL
+      }
+    )
+  })
+
+  valid_projects <- purrr::compact(projects)
+
+  if (length(valid_projects) == 0) {
+    return(schema_cristin_project_detail())
+  }
+
+  nva_parse_cristin_project_details(valid_projects)
+}
+
+#' Parse Cristin project detail records into tibble
+#'
+#' @param projects List of project records from the single-item API
+#'
+#' @return Cleaned tibble
+#' @noRd
+nva_parse_cristin_project_details <- function(projects) {
+  tibble::tibble(
+    id = purrr::map_chr(projects, \(p) nva_extract_id(p$id, "cristin/project")),
+    title = purrr::map_chr(projects, \(p) {
+      titles <- p$title %||% list()
+      if (length(titles) > 0) titles[[1]] else NA_character_
+    }),
+    status = purrr::map_chr(projects, \(p) p$status %||% NA_character_),
+    start_date = purrr::map_chr(projects, \(p) p$startDate %||% NA_character_),
+    end_date = purrr::map_chr(projects, \(p) p$endDate %||% NA_character_),
+    coordinating_institution = purrr::map_chr(projects, \(p) {
+      if (!is.null(p$coordinatingInstitution)) {
+        nva_extract_id(p$coordinatingInstitution, "cristin/organization")
+      } else {
+        NA_character_
+      }
+    })
+  )
+}
+
 #' Parse Cristin project search results
 #'
 #' @param tbl Raw tibble from API response

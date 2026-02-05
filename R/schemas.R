@@ -57,6 +57,17 @@ schema_cristin_organization <- function() {
 }
 
 #' @noRd
+schema_cristin_organization_detail <- function() {
+  nva_empty_tibble(
+    id = "chr",
+    name = "chr",
+    acronym = "chr",
+    country = "chr",
+    parent_id = "chr"
+  )
+}
+
+#' @noRd
 schema_cristin_organization_subunit <- function() {
   nva_empty_tibble(
     id = "chr",
@@ -96,6 +107,18 @@ schema_cristin_project <- function() {
     status = "chr",
     start_date = "chr",
     end_date = "chr"
+  )
+}
+
+#' @noRd
+schema_cristin_project_detail <- function() {
+  nva_empty_tibble(
+    id = "chr",
+    title = "chr",
+    status = "chr",
+    start_date = "chr",
+    end_date = "chr",
+    coordinating_institution = "chr"
   )
 }
 
