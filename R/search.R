@@ -27,6 +27,8 @@
 #'   \item{institutions}{List of top-level institution names}
 #' }
 #'
+#' @seealso [nva_search_aggregations()] for facet counts of search results
+#'
 #' @export
 #'
 #' @examples
@@ -80,6 +82,91 @@ nva_search <- function(query,
   }
 
   nva_parse_search_results(tbl)
+}
+
+#' Get aggregations (facet counts) for an NVA search
+#'
+#' Returns facet counts for a search query, showing how results are distributed
+#' across categories like publication type, institution, year, etc. Accepts the
+#' same filter parameters as [nva_search()].
+#'
+#' @inheritParams nva_search
+#'
+#' @return A tibble with columns:
+#' \describe{
+#'   \item{aggregation}{Aggregation field name (e.g., "type", "topLevelOrganization")}
+#'   \item{key}{Bucket key (identifier or value)}
+#'   \item{label}{Human-readable label (English preferred, falls back to Norwegian)}
+#'   \item{count}{Number of matching publications}
+#' }
+#'
+#' @details
+#' The API returns up to 100 buckets per aggregation field. Fields with fewer
+#' natural categories (e.g., "type", "files", "license") return all values,
+#' while high-cardinality fields (e.g., "contributor", "journal",
+#' "topLevelOrganization") are capped at the top 100 by count. To get more
+#' granular breakdowns, narrow your search with filters.
+#'
+#' Available aggregation fields: `type`, `topLevelOrganization`, `contributor`,
+#' `journal`, `series`, `publisher`, `fundingSource`, `scientificIndex`,
+#' `license`, `files`.
+#'
+#' @seealso [nva_search()] for retrieving the publications themselves
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # See how "climate" results break down by type and institution
+#' nva_search_aggregations("climate")
+#'
+#' # Filter to just publication type counts
+#' nva_search_aggregations("climate") |>
+#'   dplyr::filter(aggregation == "type")
+#'
+#' # Aggregations for a filtered search
+#' nva_search_aggregations("machine learning", year = 2024, organization = "185")
+#' }
+nva_search_aggregations <- function(query,
+                                    limit = 10L,
+                                    offset = 0L,
+                                    sort = c("relevance", "modifiedDate", "createdDate", "publishedDate"),
+                                    organization = NULL,
+                                    year = NULL,
+                                    type = NULL) {
+  sort <- rlang::arg_match(sort)
+
+  body <- nva_get(
+    "search/resources",
+    query = query,
+    results = limit,
+    from = offset,
+    sort = sort,
+    institution = organization,
+    publication_year = year,
+    instanceType = type,
+    aggregation = "all"
+  )
+
+  aggs <- body$aggregations %||% list()
+
+  if (length(aggs) == 0) {
+    return(nva_empty_tibble(
+      aggregation = "chr", key = "chr", label = "chr", count = "int"
+    ))
+  }
+
+  purrr::map2(aggs, names(aggs), \(buckets, agg_name) {
+    tibble::tibble(
+      aggregation = agg_name,
+      key = purrr::map_chr(buckets, "key"),
+      label = purrr::map_chr(buckets, \(b) {
+        if (!is.null(b$labels)) nva_get_label(b$labels) else b$key
+      }),
+      count = purrr::map_int(buckets, "count")
+    )
+  }) |>
+    purrr::list_rbind()
 }
 
 #' Parse raw search results into clean tibble

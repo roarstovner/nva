@@ -25,6 +25,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix year parameter from 'year' to 'publicationYear' in nva_search (#33)
 
 ### Changed
+- Add nva_search_aggregations() as separate function for search facet counts (#36)
+- Add aggregation support to nva_search (#34)
 - Add tests for NFR verified funding endpoints (#27)
 - Add tests for authentication functions (#30)
 - Add tests for API error handling (#29)

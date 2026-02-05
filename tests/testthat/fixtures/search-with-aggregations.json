@@ -1,0 +1,87 @@
+{
+  "hits": [
+    {
+      "identifier": "01907b5e-1234-5678-abcd-123456789abc",
+      "status": "PUBLISHED",
+      "entityDescription": {
+        "mainTitle": "Climate Change Impacts on Arctic Ecosystems",
+        "reference": {
+          "publicationInstance": {
+            "type": "AcademicArticle"
+          }
+        },
+        "publicationDate": {
+          "year": "2024"
+        },
+        "contributorsPreview": [
+          {
+            "identity": {
+              "name": "Ola Nordmann"
+            }
+          }
+        ]
+      },
+      "topLevelOrganizations": [
+        {
+          "labels": {
+            "en": "University of Oslo"
+          }
+        }
+      ]
+    }
+  ],
+  "totalHits": 150,
+  "size": 1,
+  "offset": 0,
+  "aggregations": {
+    "type": [
+      {
+        "id": "https://api.nva.unit.no/search/resources?instanceType=AcademicArticle",
+        "key": "AcademicArticle",
+        "count": 80
+      },
+      {
+        "id": "https://api.nva.unit.no/search/resources?instanceType=AcademicChapter",
+        "key": "AcademicChapter",
+        "count": 40
+      },
+      {
+        "id": "https://api.nva.unit.no/search/resources?instanceType=ReportResearch",
+        "key": "ReportResearch",
+        "count": 10
+      }
+    ],
+    "topLevelOrganization": [
+      {
+        "id": "https://api.nva.unit.no/search/resources?topLevelOrganization=185",
+        "key": "https://api.nva.unit.no/cristin/organization/185.0.0.0",
+        "count": 90,
+        "labels": {
+          "en": "University of Oslo",
+          "nb": "Universitetet i Oslo"
+        }
+      },
+      {
+        "id": "https://api.nva.unit.no/search/resources?topLevelOrganization=194",
+        "key": "https://api.nva.unit.no/cristin/organization/194.0.0.0",
+        "count": 60,
+        "labels": {
+          "nb": "OsloMet - storbyuniversitetet",
+          "en": "Oslo Metropolitan University"
+        }
+      }
+    ],
+    "files": [
+      {
+        "id": "https://api.nva.unit.no/search/resources?files=hasPublicFiles",
+        "key": "hasPublicFiles",
+        "count": 100
+      },
+      {
+        "id": "https://api.nva.unit.no/search/resources?files=noFiles",
+        "key": "noFiles",
+        "count": 50
+      }
+    ]
+  }
+}

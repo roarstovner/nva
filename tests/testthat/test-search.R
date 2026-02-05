@@ -128,3 +128,109 @@ test_that("nva_search passes year range correctly", {
   parsed <- httr2::url_parse(captured_req$url)
   expect_equal(parsed$query$publication_year, "2020,2024")
 })
+
+# Tests for nva_search_aggregations()
+
+test_that("nva_search_aggregations returns tibble with expected columns", {
+  local_mock_nva(mock_from_fixture("search-with-aggregations.json"))
+
+  result <- nva_search_aggregations("climate")
+
+  expect_s3_class(result, "tbl_df")
+  expect_named(result, c("aggregation", "key", "label", "count"))
+})
+
+test_that("nva_search_aggregations includes all aggregation fields", {
+  local_mock_nva(mock_from_fixture("search-with-aggregations.json"))
+
+  result <- nva_search_aggregations("climate")
+
+  agg_fields <- unique(result$aggregation)
+  expect_true("type" %in% agg_fields)
+  expect_true("topLevelOrganization" %in% agg_fields)
+  expect_true("files" %in% agg_fields)
+})
+
+test_that("nva_search_aggregations parses counts correctly", {
+  local_mock_nva(mock_from_fixture("search-with-aggregations.json"))
+
+  result <- nva_search_aggregations("climate")
+
+  type_rows <- result[result$aggregation == "type", ]
+  expect_equal(nrow(type_rows), 3)
+  expect_equal(type_rows$key[1], "AcademicArticle")
+  expect_equal(type_rows$count[1], 80L)
+})
+
+test_that("nva_search_aggregations uses labels when available", {
+  local_mock_nva(mock_from_fixture("search-with-aggregations.json"))
+
+  result <- nva_search_aggregations("climate")
+
+  org_rows <- result[result$aggregation == "topLevelOrganization", ]
+  # Has labels -> uses nva_get_label (prefers English)
+  expect_equal(org_rows$label[1], "University of Oslo")
+  expect_equal(org_rows$label[2], "Oslo Metropolitan University")
+})
+
+test_that("nva_search_aggregations falls back to key when no labels", {
+  local_mock_nva(mock_from_fixture("search-with-aggregations.json"))
+
+  result <- nva_search_aggregations("climate")
+
+  type_rows <- result[result$aggregation == "type", ]
+  # No labels -> label equals key
+  expect_equal(type_rows$label[1], "AcademicArticle")
+
+  files_rows <- result[result$aggregation == "files", ]
+  expect_equal(files_rows$label[1], "hasPublicFiles")
+})
+
+test_that("nva_search_aggregations passes aggregation=all to API", {
+  captured_req <- NULL
+
+  mock_fn <- function(req) {
+    captured_req <<- req
+    body <- load_fixture("search-with-aggregations.json")
+    mock_json_response(body, url = req$url)
+  }
+
+  with_mock_nva(mock_fn, {
+    nva_search_aggregations("test")
+  })
+
+  parsed <- httr2::url_parse(captured_req$url)
+  expect_equal(parsed$query$aggregation, "all")
+})
+
+test_that("nva_search_aggregations passes filter parameters to API", {
+  captured_req <- NULL
+
+  mock_fn <- function(req) {
+    captured_req <<- req
+    body <- load_fixture("search-with-aggregations.json")
+    mock_json_response(body, url = req$url)
+  }
+
+  with_mock_nva(mock_fn, {
+    nva_search_aggregations("climate", organization = "185", year = "2024",
+                            type = "AcademicArticle")
+  })
+
+  parsed <- httr2::url_parse(captured_req$url)
+  expect_equal(parsed$query$institution, "185")
+  expect_equal(parsed$query$publication_year, "2024")
+  expect_equal(parsed$query$instanceType, "AcademicArticle")
+})
+
+test_that("nva_search_aggregations returns empty tibble with correct schema for no aggregations", {
+  local_mock_nva(mock_from_fixture("empty-search.json"))
+
+  result <- nva_search_aggregations("nonexistent")
+
+  expect_s3_class(result, "tbl_df")
+  expect_equal(nrow(result), 0)
+  expect_named(result, c("aggregation", "key", "label", "count"))
+  expect_type(result$aggregation, "character")
+  expect_type(result$count, "integer")
+})

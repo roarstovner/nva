@@ -66,3 +66,6 @@ nva_search("machine learning", year = 2024, limit = 20)
 nva_search("biodiversity", organization = "185", fetch_all = TRUE)
 }
 }
+\seealso{
+\code{\link[=nva_search_aggregations]{nva_search_aggregations()}} for facet counts of search results
+}
