@@ -177,5 +177,5 @@ test_that("nva_cristin_person_publications passes parameters correctly", {
   expect_equal(parsed$query$contributor, "12345")
   expect_equal(parsed$query$results, "50")
   expect_equal(parsed$query$from, "20")
-  expect_equal(parsed$query$year, "2024")
+  expect_equal(parsed$query$publication_year, "2024")
 })

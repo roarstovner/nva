@@ -203,7 +203,8 @@ collect_subunits <- function(subunits, level, depth, results) {
 #' @param id Cristin organization identifier
 #' @param limit Number of results to return per page (default: 10, max: 100)
 #' @param offset Offset for pagination (default: 0)
-#' @param year Filter by publication year
+#' @param year Filter by publication year. Supports single year (e.g., 2024) or
+#'   range as comma-separated values (e.g., "2020,2024" for years 2020-2024)
 #' @param type Filter by publication type
 #' @param fetch_all If TRUE, fetch all publications. Default: FALSE
 #' @param max_results Maximum results when `fetch_all = TRUE` (default: Inf)
@@ -237,7 +238,7 @@ nva_cristin_organization_publications <- function(id,
     tbl <- nva_fetch_all(
       "search/resources",
       institution = id,
-      year = year,
+      publication_year = year,
       instanceType = type,
       results_per_page = 100L,
       max_results = max_results
@@ -246,7 +247,7 @@ nva_cristin_organization_publications <- function(id,
     tbl <- nva_get_tibble(
       "search/resources",
       institution = id,
-      year = year,
+      publication_year = year,
       instanceType = type,
       results = limit,
       from = offset

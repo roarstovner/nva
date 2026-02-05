@@ -1,6 +1,15 @@
-This is an R package that thinly wraps the API of https://nva.sikt.no. The API documentation is at https://swagger-ui.nva.unit.no.
+This is an R package that thinly wraps the API of https://nva.sikt.no.
 
-I want it to use the R package httr2 , so check out the docs, including the vignette "Wrapping APIs".
+## API Documentation
+
+- **Swagger UI**: https://swagger-ui.nva.unit.no
+- **Search API parameters**: https://raw.githubusercontent.com/BIBSYSDEV/nva-search-api/main/search-commons/src/main/java/no/unit/nva/search/resource/README.md
+  - Use `mcp__chainlink-safe-fetch__safe_fetch` to fetch (raw GitHub URL works well)
+  - Documents all valid search parameters, sort keys, and query types
+
+## Development
+
+Use the R package httr2 - check out the docs, including the vignette "Wrapping APIs".
 
 ## Coding Conventions
 

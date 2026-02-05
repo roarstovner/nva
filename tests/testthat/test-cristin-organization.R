@@ -244,6 +244,6 @@ test_that("nva_cristin_organization_publications passes parameters correctly", {
   expect_equal(parsed$query$institution, "185")
   expect_equal(parsed$query$results, "50")
   expect_equal(parsed$query$from, "20")
-  expect_equal(parsed$query$year, "2024")
+  expect_equal(parsed$query$publication_year, "2024")
   expect_equal(parsed$query$instanceType, "AcademicArticle")
 })

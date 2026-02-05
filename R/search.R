@@ -9,7 +9,8 @@
 #' @param sort Sort order. One of "relevance" (default), "modifiedDate",
 #'   "createdDate", or "publishedDate"
 #' @param organization Filter by organization Cristin ID (e.g., "185" for UiO)
-#' @param year Filter by publication year (e.g., 2024 or "2020-2024")
+#' @param year Filter by publication year. Supports single year (e.g., 2024) or
+#'   range as comma-separated values (e.g., "2020,2024" for years 2020-2024)
 #' @param type Filter by publication type (e.g., "AcademicArticle")
 #' @param fetch_all If TRUE, fetch all matching results (may be slow for large
 #'   result sets). Default: FALSE
@@ -56,7 +57,7 @@ nva_search <- function(query,
       query = query,
       sort = sort,
       institution = organization,
-      year = year,
+      publication_year = year,
       instanceType = type,
       results_per_page = 100L,
       max_results = max_results
@@ -69,7 +70,7 @@ nva_search <- function(query,
       from = offset,
       sort = sort,
       institution = organization,
-      year = year,
+      publication_year = year,
       instanceType = type
     )
   }

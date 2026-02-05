@@ -20,7 +20,8 @@ nva_cristin_person_publications(
 
 \item{offset}{Offset for pagination (default: 0)}
 
-\item{year}{Filter by publication year}
+\item{year}{Filter by publication year. Supports single year (e.g., 2024) or
+range as comma-separated values (e.g., "2020,2024" for years 2020-2024)}
 
 \item{fetch_all}{If TRUE, fetch all publications. Default: FALSE}
 

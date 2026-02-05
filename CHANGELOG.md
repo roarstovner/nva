@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Implement extended Cristin endpoints (projects, keywords, funding) (#4)
 
 ### Fixed
+- Fix year parameter from 'year' to 'publicationYear' in nva_search (#33)
 
 ### Changed
 - Add tests for NFR verified funding endpoints (#27)

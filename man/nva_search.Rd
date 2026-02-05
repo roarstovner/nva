@@ -28,7 +28,8 @@ nva_search(
 
 \item{organization}{Filter by organization Cristin ID (e.g., "185" for UiO)}
 
-\item{year}{Filter by publication year (e.g., 2024 or "2020-2024")}
+\item{year}{Filter by publication year. Supports single year (e.g., 2024) or
+range as comma-separated values (e.g., "2020,2024" for years 2020-2024)}
 
 \item{type}{Filter by publication type (e.g., "AcademicArticle")}
 

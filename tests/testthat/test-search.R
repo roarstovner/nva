@@ -109,6 +109,22 @@ test_that("nva_search passes query parameters correctly", {
   expect_equal(parsed$query$results, "25")
   expect_equal(parsed$query$from, "10")
   expect_equal(parsed$query$institution, "185")
-  expect_equal(parsed$query$year, "2024")
+  expect_equal(parsed$query$publication_year, "2024")
   expect_equal(parsed$query$instanceType, "AcademicArticle")
+})
+
+test_that("nva_search passes year range correctly", {
+  captured_req <- NULL
+
+  mock_fn <- function(req) {
+    captured_req <<- req
+    httr2::response_json(body = list(hits = list(), totalHits = 0))
+  }
+
+  with_mock_nva(mock_fn, {
+    nva_search("test", year = "2020,2024")
+  })
+
+  parsed <- httr2::url_parse(captured_req$url)
+  expect_equal(parsed$query$publication_year, "2020,2024")
 })
