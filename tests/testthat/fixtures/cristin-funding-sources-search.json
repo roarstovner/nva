@@ -1,0 +1,31 @@
+{
+  "hits": [
+    {
+      "identifier": "NFR",
+      "name": {
+        "nb": "Norges forskningsrad",
+        "en": "Research Council of Norway"
+      },
+      "acronym": "NFR"
+    },
+    {
+      "identifier": "EU",
+      "name": {
+        "nb": "Den europeiske union",
+        "en": "European Union"
+      },
+      "acronym": "EU"
+    },
+    {
+      "identifier": "PRIVAT",
+      "name": {
+        "nb": "Private kilder",
+        "en": "Private sources"
+      },
+      "acronym": "PRIV"
+    }
+  ],
+  "totalHits": 3,
+  "size": 3,
+  "offset": 0
+}

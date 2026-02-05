@@ -1,0 +1,37 @@
+{
+  "id": "https://api.nva.unit.no/cristin/project/123456",
+  "type": "Project",
+  "title": {
+    "nb": "Klimaendringer og havnivå",
+    "en": "Climate Change and Sea Level"
+  },
+  "status": "ACTIVE",
+  "startDate": "2020-01-01",
+  "endDate": "2025-12-31",
+  "coordinatingInstitution": {
+    "id": "https://api.nva.unit.no/cristin/organization/185.0.0.0"
+  },
+  "fundingSources": [
+    {
+      "type": "Funding",
+      "source": "https://api.nva.unit.no/cristin/funding-sources/NFR",
+      "identifier": "12345678"
+    }
+  ],
+  "participants": [
+    {
+      "type": "ProjectParticipant",
+      "identity": {
+        "id": "https://api.nva.unit.no/cristin/person/12345"
+      },
+      "roles": [
+        {
+          "type": "ProjectManager"
+        }
+      ]
+    }
+  ],
+  "academicSummary": {
+    "nb": "Prosjektet studerer klimaendringer og havnivåstigning."
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "id": "https://api.nva.unit.no/cristin/funding-sources/NFR",
+  "identifier": "NFR",
+  "type": "FundingSource",
+  "name": {
+    "nb": "Norges forskningsrad",
+    "en": "Research Council of Norway"
+  },
+  "acronym": "NFR"
+}

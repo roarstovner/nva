@@ -1,0 +1,26 @@
+{
+  "hits": [
+    {
+      "id": "https://api.nva.unit.no/cristin/project/123456",
+      "title": {
+        "nb": "Klimaendringer og havniva",
+        "en": "Climate Change and Sea Level"
+      },
+      "status": "ACTIVE",
+      "startDate": "2020-01-01",
+      "endDate": "2025-12-31"
+    },
+    {
+      "id": "https://api.nva.unit.no/cristin/project/789012",
+      "title": {
+        "nb": "Biodiversitet i Norge"
+      },
+      "status": "CONCLUDED",
+      "startDate": "2018-06-01",
+      "endDate": "2022-05-31"
+    }
+  ],
+  "totalHits": 2,
+  "size": 2,
+  "offset": 0
+}

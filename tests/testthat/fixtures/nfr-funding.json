@@ -1,0 +1,17 @@
+{
+  "id": "https://api.nva.unit.no/verified-funding/nfr/123456",
+  "type": "VerifiedFunding",
+  "title": "Climate Research Project",
+  "status": "ACTIVE",
+  "fundingAmount": 5000000,
+  "currency": "NOK",
+  "startDate": "2022-01-01",
+  "endDate": "2026-12-31",
+  "source": {
+    "id": "https://api.nva.unit.no/cristin/funding-sources/NFR",
+    "name": "Research Council of Norway"
+  },
+  "coordinatingInstitution": {
+    "id": "https://api.nva.unit.no/cristin/organization/185.0.0.0"
+  }
+}

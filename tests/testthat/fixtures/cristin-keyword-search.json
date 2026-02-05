@@ -1,0 +1,17 @@
+{
+  "hits": [
+    {
+      "id": "https://api.nva.unit.no/cristin/keyword/45678",
+      "label": "machine learning",
+      "language": "en"
+    },
+    {
+      "id": "https://api.nva.unit.no/cristin/keyword/45679",
+      "label": "maskinlaering",
+      "language": "nb"
+    }
+  ],
+  "totalHits": 2,
+  "size": 2,
+  "offset": 0
+}

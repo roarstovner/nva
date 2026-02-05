@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- Add comprehensive test coverage for all endpoints (#24)
 - Create nva R package wrapping the NVA API (#1)
 - Add documentation and tests (#6)
 - Add file download support (nva_download_file) (#5)
@@ -22,6 +23,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 ### Changed
+- Add tests for NFR verified funding endpoints (#27)
+- Add tests for authentication functions (#30)
+- Add tests for API error handling (#29)
+- Add tests for fetch_all pagination functionality (#28)
+- Add tests for Cristin keyword and funding source endpoints (#26)
+- Add tests for Cristin project endpoints (#25)
 - **BREAKING**: Rename `results` parameter to `limit` across all functions (#12)
 - **BREAKING**: Rename `from` parameter to `offset` for NVA endpoints (#12)
 - **BREAKING**: Rename resource ID parameters to `id` (was `cristin_id`, `project_id`, etc.) (#12)

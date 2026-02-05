@@ -1,0 +1,19 @@
+{
+  "hits": [
+    {
+      "id": "https://api.nva.unit.no/verified-funding/nfr/123456",
+      "title": "Climate Research Project",
+      "status": "ACTIVE",
+      "fundingAmount": 5000000
+    },
+    {
+      "id": "https://api.nva.unit.no/verified-funding/nfr/789012",
+      "title": "Biodiversity Study",
+      "status": "CONCLUDED",
+      "fundingAmount": 2500000
+    }
+  ],
+  "totalHits": 2,
+  "size": 2,
+  "offset": 0
+}
