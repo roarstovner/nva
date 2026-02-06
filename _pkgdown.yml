@@ -1,0 +1,63 @@
+url: https://roarst.github.io/nva/
+
+template:
+  bootstrap: 5
+
+reference:
+  - title: Search
+    desc: Search publications in the NVA archive.
+    contents:
+      - nva_search
+      - nva_search_aggregations
+
+  - title: Publications
+    desc: Retrieve and download publications and files.
+    contents:
+      - nva_publication
+      - nva_publications
+      - nva_publication_files
+      - nva_download_file
+
+  - title: Cristin People
+    desc: Look up researchers in the Cristin registry.
+    contents:
+      - nva_cristin_person
+      - nva_cristin_persons
+      - nva_cristin_person_search
+      - nva_cristin_person_publications
+
+  - title: Cristin Organizations
+    desc: Look up organizations in the Cristin registry.
+    contents:
+      - nva_cristin_organization
+      - nva_cristin_organizations
+      - nva_cristin_organization_search
+      - nva_cristin_organization_subunits
+      - nva_cristin_organization_publications
+
+  - title: Cristin Projects
+    desc: Look up research projects in the Cristin registry.
+    contents:
+      - nva_cristin_project
+      - nva_cristin_projects
+      - nva_cristin_project_search
+
+  - title: Cristin Other
+    desc: Keywords and funding sources from Cristin.
+    contents:
+      - nva_cristin_keyword
+      - nva_cristin_keyword_search
+      - nva_cristin_funding_source
+      - nva_cristin_funding_source_search
+
+  - title: Verified Funding
+    desc: Look up verified funding from the Research Council of Norway.
+    contents:
+      - nva_verified_funding_nfr
+      - nva_verified_funding_nfr_search
+
+  - title: Configuration
+    desc: API key management.
+    contents:
+      - nva_set_api_key
+      - nva_has_api_key

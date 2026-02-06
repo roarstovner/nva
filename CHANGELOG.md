@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- Add pkgdown site configuration (#40)
+- Add advanced search parameters to nva_search() (#38)
 - Add plural tibble getters for organizations and projects to match nva_cristin_persons pattern (#35)
 - Add comprehensive test coverage for all endpoints (#24)
 - Create nva R package wrapping the NVA API (#1)
@@ -25,6 +27,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix year parameter from 'year' to 'publicationYear' in nva_search (#33)
 
 ### Changed
+- Fix user-agent and add DESCRIPTION metadata (#41)
 - Add nva_search_aggregations() as separate function for search facet counts (#36)
 - Add aggregation support to nva_search (#34)
 - Add tests for NFR verified funding endpoints (#27)

@@ -21,7 +21,18 @@
       "Bash(chainlink ready:*)",
       "Bash(chainlink close:*)",
       "Bash(git add:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(git push)",
+      "Bash(chainlink create:*)",
+      "Bash(Rscript:*)",
+      "mcp__chainlink-safe-fetch__safe_fetch",
+      "Bash(chainlink session start:*)",
+      "Bash(git push:*)",
+      "Bash(wc:*)",
+      "Bash(ls:*)",
+      "Bash(npx chainlink --help:*)",
+      "Bash(chainlink --help:*)",
+      "Bash(git reset:*)"
     ]
   }
 }
