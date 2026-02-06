@@ -10,7 +10,7 @@ and projects.
 ``` r
 # Install from GitHub
 # install.packages("pak")
-pak::pak("roarst/nva")
+pak::pak("roarstovner/nva")
 ```
 
 ## Authentication
@@ -33,7 +33,7 @@ For persistent configuration, add `NVA_API_KEY=your_key` to your
 
 ## Searching publications
 
-[`nva_search()`](https://roarst.github.io/nva/reference/nva_search.md)
+[`nva_search()`](https://roarstovner.github.io/nva/reference/nva_search.md)
 is the main entry point for finding publications. It returns a tibble
 with key metadata.
 
@@ -67,7 +67,7 @@ The result is a tibble with columns: `identifier`, `title`, `type`,
 ### Search aggregations
 
 Use
-[`nva_search_aggregations()`](https://roarst.github.io/nva/reference/nva_search_aggregations.md)
+[`nva_search_aggregations()`](https://roarstovner.github.io/nva/reference/nva_search_aggregations.md)
 to see how results are distributed across categories like publication
 type, institution, or year — without fetching the publications
 themselves.

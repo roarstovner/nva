@@ -21,11 +21,11 @@ Use the R package httr2 - check out the docs, including the vignette
 - All exported functions use `nva_` prefix
 - Single-item getters: `nva_cristin_person(id)`, `nva_publication(id)`
 - Search/list functions: use `_search` suffix -
-  [`nva_cristin_person_search()`](https://roarst.github.io/nva/reference/nva_cristin_person_search.md),
-  [`nva_cristin_project_search()`](https://roarst.github.io/nva/reference/nva_cristin_project_search.md)
+  [`nva_cristin_person_search()`](https://roarstovner.github.io/nva/reference/nva_cristin_person_search.md),
+  [`nva_cristin_project_search()`](https://roarstovner.github.io/nva/reference/nva_cristin_project_search.md)
 - Related data:
-  [`nva_cristin_person_publications()`](https://roarst.github.io/nva/reference/nva_cristin_person_publications.md),
-  [`nva_publication_files()`](https://roarst.github.io/nva/reference/nva_publication_files.md)
+  [`nva_cristin_person_publications()`](https://roarstovner.github.io/nva/reference/nva_cristin_person_publications.md),
+  [`nva_publication_files()`](https://roarstovner.github.io/nva/reference/nva_publication_files.md)
 
 ### Parameter Naming
 

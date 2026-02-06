@@ -3,7 +3,7 @@
 Returns facet counts for a search query, showing how results are
 distributed across categories like publication type, institution, year,
 etc. Accepts the same filter parameters as
-[`nva_search()`](https://roarst.github.io/nva/reference/nva_search.md).
+[`nva_search()`](https://roarstovner.github.io/nva/reference/nva_search.md).
 
 ## Usage
 
@@ -208,7 +208,7 @@ Available aggregation fields: `type`, `topLevelOrganization`,
 
 ## See also
 
-[`nva_search()`](https://roarst.github.io/nva/reference/nva_search.md)
+[`nva_search()`](https://roarstovner.github.io/nva/reference/nva_search.md)
 for retrieving the publications themselves
 
 ## Examples

@@ -9,7 +9,7 @@ organizations, and projects.
 
 ``` r
 # install.packages("pak")
-pak::pak("roarst/nva")
+pak::pak("roarstovner/nva")
 ```
 
 ## Usage
@@ -71,6 +71,6 @@ Or add `NVA_API_KEY=your_key` to your `.Renviron` (use
 ## Learn more
 
 - [Getting started
-  vignette](https://roarst.github.io/nva/articles/nva.html)
-- [Function reference](https://roarst.github.io/nva/reference/)
+  vignette](https://roarstovner.github.io/nva/articles/nva.html)
+- [Function reference](https://roarstovner.github.io/nva/reference/)
 - [NVA API documentation](https://swagger-ui.nva.unit.no)

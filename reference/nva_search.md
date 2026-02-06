@@ -217,7 +217,7 @@ A tibble with columns:
 
 ## See also
 
-[`nva_search_aggregations()`](https://roarst.github.io/nva/reference/nva_search_aggregations.md)
+[`nva_search_aggregations()`](https://roarstovner.github.io/nva/reference/nva_search_aggregations.md)
 for facet counts of search results
 
 ## Examples

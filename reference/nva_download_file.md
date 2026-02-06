@@ -13,7 +13,7 @@ nva_download_file(file_id, destfile = NULL, overwrite = FALSE, progress = TRUE)
 - file_id:
 
   File identifier (from
-  [`nva_publication_files()`](https://roarst.github.io/nva/reference/nva_publication_files.md))
+  [`nva_publication_files()`](https://roarstovner.github.io/nva/reference/nva_publication_files.md))
 
 - destfile:
 
