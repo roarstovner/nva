@@ -1,2 +1,9 @@
 ^nva\.Rproj$
 ^\.Rproj\.user$
+^\.mcp\.json$
+^\.chainlink$
+^\.claude$
+^\.github$
+^CHANGELOG\.md$
+^CLAUDE\.md$
+^_pkgdown\.yml$

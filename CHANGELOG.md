@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- Add getting-started vignette (#39)
 - Add GitHub Actions CI (#42)
 - Add pkgdown site configuration (#40)
 - Add advanced search parameters to nva_search() (#38)
@@ -25,9 +26,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Implement extended Cristin endpoints (projects, keywords, funding) (#4)
 
 ### Fixed
+- Fix missing dplyr and withr in test Suggests (#44)
 - Fix year parameter from 'year' to 'publicationYear' in nva_search (#33)
 
 ### Changed
+- Add .Rbuildignore for dev files (#45)
 - Add tests for schema functions in schemas.R (#43)
 - Fix user-agent and add DESCRIPTION metadata (#41)
 - Add nva_search_aggregations() as separate function for search facet counts (#36)

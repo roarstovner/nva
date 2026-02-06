@@ -8,6 +8,14 @@
 \description{
 Provides functions for accessing the Norwegian National Research Archive (NVA) API. Includes support for searching publications, retrieving metadata, accessing Cristin data, and downloading files.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://roarst.github.io/nva/}
+  \item Report bugs at \url{https://github.com/roarst/nva/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Roar Bakken Stovner \email{robast@oslomet.no}
 

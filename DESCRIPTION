@@ -20,9 +20,11 @@ Imports:
     rlang (>= 1.0.0),
     cli
 Suggests:
+    dplyr,
     jsonlite,
     knitr,
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    withr
 VignetteBuilder: knitr
 Config/testthat/edition: 3
