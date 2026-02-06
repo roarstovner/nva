@@ -1,0 +1,200 @@
+# Getting started with nva
+
+The nva package provides an R interface to the [Norwegian National
+Research Archive (NVA)](https://nva.sikt.no) API. It covers both the NVA
+publication search and the Cristin registry for persons, organizations,
+and projects.
+
+## Installation
+
+``` r
+# Install from GitHub
+# install.packages("pak")
+pak::pak("roarst/nva")
+```
+
+## Authentication
+
+Most NVA endpoints are public and do not require authentication. An API
+key is only needed for endpoints that access non-public data. If you
+have an API key, set it for the current session:
+
+``` r
+library(nva)
+
+nva_set_api_key("your-api-key")
+
+# Check if a key is configured
+nva_has_api_key()
+```
+
+For persistent configuration, add `NVA_API_KEY=your_key` to your
+`.Renviron` file (use `usethis::edit_r_environ()` to open it).
+
+## Searching publications
+
+[`nva_search()`](https://roarst.github.io/nva/reference/nva_search.md)
+is the main entry point for finding publications. It returns a tibble
+with key metadata.
+
+``` r
+# Basic search
+nva_search("climate change")
+
+# Filter by year and limit results
+nva_search("machine learning", year = 2024, limit = 20)
+
+# Filter by organization (Cristin ID, e.g. "185" for University of Oslo)
+nva_search("biodiversity", organization = "185")
+
+# Filter by publication type
+nva_search("deep learning", type = "AcademicArticle")
+
+# Combine multiple filters
+nva_search(
+  "renewable energy",
+  year = "2020,2024",
+
+  organization = "194",
+  scientific_value = "LevelTwo",
+  files = "hasPublicFiles"
+)
+```
+
+The result is a tibble with columns: `identifier`, `title`, `type`,
+`year`, `status`, `contributors` (list), and `institutions` (list).
+
+### Search aggregations
+
+Use
+[`nva_search_aggregations()`](https://roarst.github.io/nva/reference/nva_search_aggregations.md)
+to see how results are distributed across categories like publication
+type, institution, or year — without fetching the publications
+themselves.
+
+``` r
+aggs <- nva_search_aggregations("climate change")
+aggs
+
+# Filter to see only publication type counts
+aggs[aggs$aggregation == "type", ]
+```
+
+## Publication details and files
+
+Once you have a publication identifier from search results, retrieve the
+full record or its associated files.
+
+``` r
+# Get the full record (returns a list)
+pub <- nva_publication("01907b56-a6b0-7b8c-8f79-12345abcdef")
+pub$entityDescription$mainTitle
+
+# Get multiple publications as a tibble
+pubs <- nva_publications(c("id-1", "id-2"))
+
+# List files attached to a publication
+files <- nva_publication_files("01907b56-a6b0-7b8c-8f79-12345abcdef")
+files
+
+# Download a file
+nva_download_file(files$identifier[1], destfile = "paper.pdf")
+```
+
+## Cristin: persons
+
+The Cristin registry contains information about researchers at Norwegian
+institutions.
+
+``` r
+# Search for a researcher by name
+nva_cristin_person_search(query = "Hansen")
+
+# Search within a specific organization
+nva_cristin_person_search(query = "Olsen", organization = "185")
+
+# Get detailed info for a specific person (returns a list)
+person <- nva_cristin_person(12345)
+
+# Get structured details for one or more persons as a tibble
+nva_cristin_persons(c(12345, 67890))
+
+# Get a researcher's publications
+nva_cristin_person_publications(12345)
+nva_cristin_person_publications(12345, year = 2024)
+```
+
+## Cristin: organizations
+
+Look up Norwegian research institutions and their organizational
+hierarchy.
+
+``` r
+# Search for organizations
+nva_cristin_organization_search("university")
+
+# Get a specific organization (returns a list)
+org <- nva_cristin_organization(185)
+org$labels$en
+# [1] "University of Oslo"
+
+# Get multiple organizations as a tibble
+nva_cristin_organizations(c(185, 194))
+
+# Explore the organizational hierarchy
+faculties <- nva_cristin_organization_subunits(185)
+faculties
+
+# Go deeper (faculties and departments)
+nva_cristin_organization_subunits(185, depth = 2)
+
+# Get publications for an organization
+nva_cristin_organization_publications(185, year = 2024)
+```
+
+## Cristin: projects
+
+Search and retrieve research projects registered in Cristin.
+
+``` r
+# Search for projects
+nva_cristin_project_search(query = "climate")
+
+# Filter by status
+nva_cristin_project_search(status = "ACTIVE", organization = "185")
+
+# Get a specific project (returns a list)
+project <- nva_cristin_project(123456)
+
+# Get multiple projects as a tibble
+nva_cristin_projects(c(123456, 789012))
+```
+
+## Pagination with fetch_all
+
+Search functions return a limited number of results by default
+(`limit = 10`). For larger result sets, use `fetch_all = TRUE` to
+automatically paginate through all matching records.
+
+``` r
+# Fetch all matching publications (may be slow for broad queries)
+all_pubs <- nva_search("biodiversity", organization = "185", fetch_all = TRUE)
+
+# Cap the number of results
+capped <- nva_search(
+  "machine learning",
+  fetch_all = TRUE,
+  max_results = 500
+)
+
+# Also works for person and organization publications
+all_person_pubs <- nva_cristin_person_publications(12345, fetch_all = TRUE)
+```
+
+For Cristin search endpoints (persons, organizations, projects), use the
+`page` parameter for manual pagination:
+
+``` r
+page1 <- nva_cristin_person_search(query = "Hansen", limit = 100, page = 1)
+page2 <- nva_cristin_person_search(query = "Hansen", limit = 100, page = 2)
+```
