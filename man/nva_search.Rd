@@ -8,10 +8,35 @@ nva_search(
   query,
   limit = 10L,
   offset = 0L,
-  sort = c("relevance", "modifiedDate", "createdDate", "publishedDate"),
+  sort = c("relevance", "modifiedDate", "createdDate", "publishedDate", "title",
+    "category", "publicationDate", "unitId"),
   organization = NULL,
   year = NULL,
   type = NULL,
+  contributor = NULL,
+  contributor_name = NULL,
+  doi = NULL,
+  title = NULL,
+  abstract = NULL,
+  tags = NULL,
+  journal = NULL,
+  publisher = NULL,
+  issn = NULL,
+  isbn = NULL,
+  license = NULL,
+  files = NULL,
+  funding_source = NULL,
+  funding_identifier = NULL,
+  scientific_value = NULL,
+  scientific_index_status = NULL,
+  created_since = NULL,
+  modified_since = NULL,
+  published_since = NULL,
+  status = NULL,
+  orcid = NULL,
+  project = NULL,
+  unit = NULL,
+  ...,
   fetch_all = FALSE,
   max_results = Inf
 )
@@ -24,7 +49,8 @@ nva_search(
 \item{offset}{Offset for pagination (default: 0)}
 
 \item{sort}{Sort order. One of "relevance" (default), "modifiedDate",
-"createdDate", or "publishedDate"}
+"createdDate", "publishedDate", "title", "category", "publicationDate",
+or "unitId"}
 
 \item{organization}{Filter by organization Cristin ID (e.g., "185" for UiO)}
 
@@ -32,6 +58,55 @@ nva_search(
 range as comma-separated values (e.g., "2020,2024" for years 2020-2024)}
 
 \item{type}{Filter by publication type (e.g., "AcademicArticle")}
+
+\item{contributor}{Filter by Cristin person ID}
+
+\item{contributor_name}{Filter by contributor name (fuzzy match)}
+
+\item{doi}{Filter by DOI}
+
+\item{title}{Filter by title text}
+
+\item{abstract}{Filter by abstract text}
+
+\item{tags}{Filter by tags/keywords}
+
+\item{journal}{Filter by journal name, ID, or ISSN}
+
+\item{publisher}{Filter by publisher name or ID}
+
+\item{issn}{Filter by ISSN}
+
+\item{isbn}{Filter by ISBN}
+
+\item{license}{Filter by license}
+
+\item{files}{Filter by file status (e.g., "hasPublicFiles")}
+
+\item{funding_source}{Filter by funding source text}
+
+\item{funding_identifier}{Filter by funding project ID}
+
+\item{scientific_value}{Filter by NPI level ("LevelOne", "LevelTwo")}
+
+\item{scientific_index_status}{Filter by reporting status}
+
+\item{created_since}{Filter by creation date (ISO 8601)}
+
+\item{modified_since}{Filter by modification date (ISO 8601)}
+
+\item{published_since}{Filter by publication date (ISO 8601)}
+
+\item{status}{Filter by publication status}
+
+\item{orcid}{Filter by ORCID}
+
+\item{project}{Filter by Cristin project ID}
+
+\item{unit}{Filter by organizational unit ID}
+
+\item{...}{Additional API query parameters passed directly (see
+\href{https://github.com/BIBSYSDEV/nva-search-api}{NVA Search API docs})}
 
 \item{fetch_all}{If TRUE, fetch all matching results (may be slow for large
 result sets). Default: FALSE}
@@ -64,6 +139,18 @@ nva_search("machine learning", year = 2024, limit = 20)
 
 # Fetch all results for a specific organization
 nva_search("biodiversity", organization = "185", fetch_all = TRUE)
+
+# Filter by DOI
+nva_search("climate", doi = "10.1371")
+
+# Filter by NPI level
+nva_search("machine learning", scientific_value = "LevelTwo")
+
+# Only publications with public files, published since 2024
+nva_search("AI", files = "hasPublicFiles", published_since = "2024")
+
+# Pass additional API parameters directly
+nva_search("test", series = "MySeriesName")
 }
 }
 \seealso{

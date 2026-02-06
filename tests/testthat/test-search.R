@@ -83,6 +83,10 @@ test_that("nva_search accepts valid sort options", {
   expect_no_error(nva_search("test", sort = "modifiedDate"))
   expect_no_error(nva_search("test", sort = "createdDate"))
   expect_no_error(nva_search("test", sort = "publishedDate"))
+  expect_no_error(nva_search("test", sort = "title"))
+  expect_no_error(nva_search("test", sort = "category"))
+  expect_no_error(nva_search("test", sort = "publicationDate"))
+  expect_no_error(nva_search("test", sort = "unitId"))
 })
 
 test_that("nva_search passes query parameters correctly", {
@@ -233,4 +237,141 @@ test_that("nva_search_aggregations returns empty tibble with correct schema for 
   expect_named(result, c("aggregation", "key", "label", "count"))
   expect_type(result$aggregation, "character")
   expect_type(result$count, "integer")
+})
+
+# Tests for new search parameters
+
+test_that("nva_search passes advanced filter parameters correctly", {
+  captured_req <- NULL
+  mock_fn <- function(req) {
+    captured_req <<- req
+    body <- load_fixture("search-publications.json")
+    mock_json_response(body, url = req$url)
+  }
+
+  with_mock_nva(mock_fn, {
+    nva_search("test",
+               contributor = "12345",
+               contributor_name = "Nordmann",
+               doi = "10.1371/journal.pone",
+               title = "climate",
+               abstract = "warming",
+               tags = "arctic",
+               journal = "Nature",
+               publisher = "Springer",
+               issn = "1234-5678",
+               isbn = "978-3-16-148410-0",
+               license = "CC-BY-4.0",
+               files = "hasPublicFiles",
+               funding_source = "NFR",
+               funding_identifier = "123456",
+               scientific_value = "LevelTwo",
+               scientific_index_status = "Reported",
+               created_since = "2024-01-01",
+               modified_since = "2024-06-01",
+               published_since = "2024-01-01",
+               status = "PUBLISHED",
+               orcid = "0000-0001-2345-6789",
+               project = "54321",
+               unit = "185.90.0.0")
+  })
+
+  parsed <- httr2::url_parse(captured_req$url)
+  expect_equal(parsed$query$contributor, "12345")
+  expect_equal(parsed$query$contributorName, "Nordmann")
+  expect_equal(parsed$query$doi, "10.1371/journal.pone")
+  expect_equal(parsed$query$title, "climate")
+  expect_equal(parsed$query$abstract, "warming")
+  expect_equal(parsed$query$tags, "arctic")
+  expect_equal(parsed$query$journal, "Nature")
+  expect_equal(parsed$query$publisher, "Springer")
+  expect_equal(parsed$query$issn, "1234-5678")
+  expect_equal(parsed$query$isbn, "978-3-16-148410-0")
+  expect_equal(parsed$query$license, "CC-BY-4.0")
+  expect_equal(parsed$query$files, "hasPublicFiles")
+  expect_equal(parsed$query$fundingSource, "NFR")
+  expect_equal(parsed$query$fundingIdentifier, "123456")
+  expect_equal(parsed$query$scientificValue, "LevelTwo")
+  expect_equal(parsed$query$scientificIndexStatus, "Reported")
+  expect_equal(parsed$query$createdSince, "2024-01-01")
+  expect_equal(parsed$query$modifiedSince, "2024-06-01")
+  expect_equal(parsed$query$publishedSince, "2024-01-01")
+  expect_equal(parsed$query$status, "PUBLISHED")
+  expect_equal(parsed$query$orcid, "0000-0001-2345-6789")
+  expect_equal(parsed$query$project, "54321")
+  expect_equal(parsed$query$unit, "185.90.0.0")
+})
+
+test_that("nva_search passes ... params directly to API", {
+  captured_req <- NULL
+  mock_fn <- function(req) {
+    captured_req <<- req
+    body <- load_fixture("search-publications.json")
+    mock_json_response(body, url = req$url)
+  }
+
+  with_mock_nva(mock_fn, {
+    nva_search("test", series = "MySeries", customParam = "value")
+  })
+
+  parsed <- httr2::url_parse(captured_req$url)
+  expect_equal(parsed$query$series, "MySeries")
+  expect_equal(parsed$query$customParam, "value")
+})
+
+test_that("nva_search omits NULL parameters from query", {
+  captured_req <- NULL
+  mock_fn <- function(req) {
+    captured_req <<- req
+    body <- load_fixture("search-publications.json")
+    mock_json_response(body, url = req$url)
+  }
+
+  with_mock_nva(mock_fn, {
+    nva_search("test", doi = "10.1234")
+  })
+
+  parsed <- httr2::url_parse(captured_req$url)
+  expect_equal(parsed$query$doi, "10.1234")
+  expect_null(parsed$query$contributor)
+  expect_null(parsed$query$orcid)
+  expect_null(parsed$query$institution)
+})
+
+test_that("nva_search_aggregations passes advanced filter parameters", {
+  captured_req <- NULL
+  mock_fn <- function(req) {
+    captured_req <<- req
+    body <- load_fixture("search-with-aggregations.json")
+    mock_json_response(body, url = req$url)
+  }
+
+  with_mock_nva(mock_fn, {
+    nva_search_aggregations("test",
+                            doi = "10.1371",
+                            scientific_value = "LevelTwo",
+                            files = "hasPublicFiles")
+  })
+
+  parsed <- httr2::url_parse(captured_req$url)
+  expect_equal(parsed$query$doi, "10.1371")
+  expect_equal(parsed$query$scientificValue, "LevelTwo")
+  expect_equal(parsed$query$files, "hasPublicFiles")
+  expect_equal(parsed$query$aggregation, "all")
+})
+
+test_that("nva_search_aggregations passes ... params directly to API", {
+  captured_req <- NULL
+  mock_fn <- function(req) {
+    captured_req <<- req
+    body <- load_fixture("search-with-aggregations.json")
+    mock_json_response(body, url = req$url)
+  }
+
+  with_mock_nva(mock_fn, {
+    nva_search_aggregations("test", series = "MySeries")
+  })
+
+  parsed <- httr2::url_parse(captured_req$url)
+  expect_equal(parsed$query$series, "MySeries")
 })
