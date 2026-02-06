@@ -1,3 +1,76 @@
-Provides functions for accessing the Norwegian National Research Archive
-(NVA) API. Includes support for searching publications, retrieving
-metadata, accessing Cristin data, and downloading files.
+# nva
+
+nva provides an R interface to the [Norwegian National Research Archive
+(NVA)](https://nva.sikt.no) API. It covers both the NVA publication
+search and the [Cristin](https://www.cristin.no/) registry for persons,
+organizations, and projects.
+
+## Installation
+
+``` r
+# install.packages("pak")
+pak::pak("roarst/nva")
+```
+
+## Usage
+
+### Search publications
+
+``` r
+library(nva)
+
+# Basic search
+nva_search("climate change")
+
+# Filter by year and organization
+nva_search("machine learning", year = 2024, organization = "194")
+```
+
+### Publication details and files
+
+``` r
+# Full record (returns a list)
+pub <- nva_publication("01907b56-a6b0-7b8c-8f79-12345abcdef")
+
+# List and download files
+files <- nva_publication_files("01907b56-a6b0-7b8c-8f79-12345abcdef")
+nva_download_file(files$identifier[1], destfile = "paper.pdf")
+```
+
+### Cristin: persons, organizations, projects
+
+``` r
+# Search for researchers
+nva_cristin_person_search(query = "Hansen")
+
+# Organization hierarchy
+nva_cristin_organization_subunits(185, depth = 2)
+
+# Research projects
+nva_cristin_project_search(query = "climate", status = "ACTIVE")
+```
+
+### Pagination
+
+``` r
+# Automatically fetch all pages
+all_pubs <- nva_search("biodiversity", organization = "185", fetch_all = TRUE)
+```
+
+## Authentication
+
+Most endpoints are public. For non-public data, set an API key:
+
+``` r
+nva_set_api_key("your-api-key")
+```
+
+Or add `NVA_API_KEY=your_key` to your `.Renviron` (use
+`usethis::edit_r_environ()`).
+
+## Learn more
+
+- [Getting started
+  vignette](https://roarst.github.io/nva/articles/nva.html)
+- [Function reference](https://roarst.github.io/nva/reference/)
+- [NVA API documentation](https://swagger-ui.nva.unit.no)
