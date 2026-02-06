@@ -6,8 +6,8 @@ Authors@R:
 Description: Provides functions for accessing the Norwegian National Research
     Archive (NVA) API. Includes support for searching publications, retrieving
     metadata, accessing Cristin data, and downloading files.
-URL: https://roarst.github.io/nva/
-BugReports: https://github.com/roarst/nva/issues
+URL: https://roarstovner.github.io/nva/
+BugReports: https://github.com/roarstovner/nva/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

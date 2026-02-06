@@ -24,7 +24,7 @@ search and the Cristin registry for persons, organizations, and projects.
 ```{r}
 # Install from GitHub
 # install.packages("pak")
-pak::pak("roarst/nva")
+pak::pak("roarstovner/nva")
 ```
 
 ## Authentication
