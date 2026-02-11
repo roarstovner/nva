@@ -90,23 +90,23 @@ to your <code>.Renviron</code> file (use
 <div class="section level2">
 <h2 id="searching-publications">Searching publications<a class="anchor" aria-label="anchor" href="#searching-publications"></a>
 </h2>
-<p><code><a href="../reference/nva_search.html">nva_search()</a></code> is the main entry point for finding
+<p><code><a href="../reference/nva_publication_search.html">nva_search()</a></code> is the main entry point for finding
 publications. It returns a tibble with key metadata.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Basic search</span></span>
-<span><span class="fu"><a href="../reference/nva_search.html">nva_search</a></span><span class="op">(</span><span class="st">"climate change"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/nva_publication_search.html">nva_search</a></span><span class="op">(</span><span class="st">"climate change"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Filter by year and limit results</span></span>
-<span><span class="fu"><a href="../reference/nva_search.html">nva_search</a></span><span class="op">(</span><span class="st">"machine learning"</span>, year <span class="op">=</span> <span class="fl">2024</span>, limit <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/nva_publication_search.html">nva_search</a></span><span class="op">(</span><span class="st">"machine learning"</span>, year <span class="op">=</span> <span class="fl">2024</span>, limit <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Filter by organization (Cristin ID, e.g. "185" for University of Oslo)</span></span>
-<span><span class="fu"><a href="../reference/nva_search.html">nva_search</a></span><span class="op">(</span><span class="st">"biodiversity"</span>, organization <span class="op">=</span> <span class="st">"185"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/nva_publication_search.html">nva_search</a></span><span class="op">(</span><span class="st">"biodiversity"</span>, organization <span class="op">=</span> <span class="st">"185"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Filter by publication type</span></span>
-<span><span class="fu"><a href="../reference/nva_search.html">nva_search</a></span><span class="op">(</span><span class="st">"deep learning"</span>, type <span class="op">=</span> <span class="st">"AcademicArticle"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/nva_publication_search.html">nva_search</a></span><span class="op">(</span><span class="st">"deep learning"</span>, type <span class="op">=</span> <span class="st">"AcademicArticle"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Combine multiple filters</span></span>
-<span><span class="fu"><a href="../reference/nva_search.html">nva_search</a></span><span class="op">(</span></span>
+<span><span class="fu"><a href="../reference/nva_publication_search.html">nva_search</a></span><span class="op">(</span></span>
 <span>  <span class="st">"renewable energy"</span>,</span>
 <span>  year <span class="op">=</span> <span class="st">"2020,2024"</span>,</span>
 <span></span>
@@ -121,11 +121,11 @@ publications. It returns a tibble with key metadata.</p>
 <div class="section level3">
 <h3 id="search-aggregations">Search aggregations<a class="anchor" aria-label="anchor" href="#search-aggregations"></a>
 </h3>
-<p>Use <code><a href="../reference/nva_search_aggregations.html">nva_search_aggregations()</a></code> to see how results are
+<p>Use <code><a href="../reference/nva_publication_search_aggregations.html">nva_search_aggregations()</a></code> to see how results are
 distributed across categories like publication type, institution, or
 year — without fetching the publications themselves.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">aggs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/nva_search_aggregations.html">nva_search_aggregations</a></span><span class="op">(</span><span class="st">"climate change"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">aggs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/nva_publication_search_aggregations.html">nva_search_aggregations</a></span><span class="op">(</span><span class="st">"climate change"</span><span class="op">)</span></span>
 <span><span class="va">aggs</span></span>
 <span></span>
 <span><span class="co"># Filter to see only publication type counts</span></span>
@@ -227,10 +227,10 @@ hierarchy.</p>
 matching records.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Fetch all matching publications (may be slow for broad queries)</span></span>
-<span><span class="va">all_pubs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/nva_search.html">nva_search</a></span><span class="op">(</span><span class="st">"biodiversity"</span>, organization <span class="op">=</span> <span class="st">"185"</span>, fetch_all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">all_pubs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/nva_publication_search.html">nva_search</a></span><span class="op">(</span><span class="st">"biodiversity"</span>, organization <span class="op">=</span> <span class="st">"185"</span>, fetch_all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Cap the number of results</span></span>
-<span><span class="va">capped</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/nva_search.html">nva_search</a></span><span class="op">(</span></span>
+<span><span class="va">capped</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/nva_publication_search.html">nva_search</a></span><span class="op">(</span></span>
 <span>  <span class="st">"machine learning"</span>,</span>
 <span>  fetch_all <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  max_results <span class="op">=</span> <span class="fl">500</span></span>

@@ -51,6 +51,10 @@ A tibble with columns:
 
   Country code
 
+- type:
+
+  Organization type (e.g., university, research institute)
+
 ## Examples
 
 ``` r

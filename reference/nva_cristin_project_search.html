@@ -54,7 +54,7 @@
 
 
 <dl><dt id="arg-query">query<a class="anchor" aria-label="anchor" href="#arg-query"></a></dt>
-<dd><p>Project title to search for</p></dd>
+<dd><p>Project title to search for (searches in project title field)</p></dd>
 
 
 <dt id="arg-organization">organization<a class="anchor" aria-label="anchor" href="#arg-organization"></a></dt>
@@ -62,7 +62,7 @@
 
 
 <dt id="arg-keyword">keyword<a class="anchor" aria-label="anchor" href="#arg-keyword"></a></dt>
-<dd><p>Keyword to search for</p></dd>
+<dd><p>Keyword to search for (searches in project keyword tags, separate from title)</p></dd>
 
 
 <dt id="arg-status">status<a class="anchor" aria-label="anchor" href="#arg-status"></a></dt>
@@ -103,8 +103,11 @@
 <span class="r-in"><span><span class="co"># Search for projects by title</span></span></span>
 <span class="r-in"><span><span class="fu">nva_cristin_project_search</span><span class="op">(</span>query <span class="op">=</span> <span class="st">"climate"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Search for active projects</span></span></span>
-<span class="r-in"><span><span class="fu">nva_cristin_project_search</span><span class="op">(</span>status <span class="op">=</span> <span class="st">"ACTIVE"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Search for projects by keyword tag</span></span></span>
+<span class="r-in"><span><span class="fu">nva_cristin_project_search</span><span class="op">(</span>keyword <span class="op">=</span> <span class="st">"sustainability"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Combine multiple search criteria</span></span></span>
+<span class="r-in"><span><span class="fu">nva_cristin_project_search</span><span class="op">(</span>query <span class="op">=</span> <span class="st">"climate"</span>, status <span class="op">=</span> <span class="st">"ACTIVE"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

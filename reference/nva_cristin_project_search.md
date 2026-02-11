@@ -19,7 +19,7 @@ nva_cristin_project_search(
 
 - query:
 
-  Project title to search for
+  Project title to search for (searches in project title field)
 
 - organization:
 
@@ -27,7 +27,8 @@ nva_cristin_project_search(
 
 - keyword:
 
-  Keyword to search for
+  Keyword to search for (searches in project keyword tags, separate from
+  title)
 
 - status:
 
@@ -72,7 +73,10 @@ if (FALSE) { # \dontrun{
 # Search for projects by title
 nva_cristin_project_search(query = "climate")
 
-# Search for active projects
-nva_cristin_project_search(status = "ACTIVE")
+# Search for projects by keyword tag
+nva_cristin_project_search(keyword = "sustainability")
+
+# Combine multiple search criteria
+nva_cristin_project_search(query = "climate", status = "ACTIVE")
 } # }
 ```

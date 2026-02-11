@@ -7,7 +7,7 @@ Search the Norwegian Research Council (NFR) verified funding registry.
 ``` r
 nva_verified_funding_nfr_search(
   query = NULL,
-  nfr_project_id = NULL,
+  project_id = NULL,
   limit = 10L,
   page = 1L
 )
@@ -19,7 +19,7 @@ nva_verified_funding_nfr_search(
 
   Search query
 
-- nfr_project_id:
+- project_id:
 
   NFR project ID
 
@@ -59,6 +59,6 @@ if (FALSE) { # \dontrun{
 nva_verified_funding_nfr_search(query = "climate")
 
 # Search by project ID
-nva_verified_funding_nfr_search(nfr_project_id = "123456")
+nva_verified_funding_nfr_search(project_id = "123456")
 } # }
 ```

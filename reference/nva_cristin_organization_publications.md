@@ -49,7 +49,8 @@ nva_cristin_organization_publications(
 
 ## Value
 
-A tibble with publication information (same format as nva_search)
+A tibble with publication information (same format as
+nva_publication_search)
 
 ## Examples
 

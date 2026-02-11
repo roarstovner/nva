@@ -39,9 +39,27 @@
 
 
     <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+
+<div class="section">
+<h3 id="return-types">Return Types<a class="anchor" aria-label="anchor" href="#return-types"></a></h3>
+
+
+<p>Functions in this package follow a consistent return type convention:</p><ul><li><p><strong>Singular functions</strong> (<code><a href="nva_publication.html">nva_publication()</a></code>, <code><a href="nva_cristin_person.html">nva_cristin_person()</a></code>) return
+raw list objects from the API, preserving the full JSON structure for
+maximum flexibility.</p></li>
+<li><p><strong>Plural functions</strong> (<code><a href="nva_publications.html">nva_publications()</a></code>, <code><a href="nva_cristin_persons.html">nva_cristin_persons()</a></code>) return
+tibbles with parsed and cleaned data. These tibbles may have different
+columns than search results since detail endpoints provide more information.</p></li>
+<li><p><strong>Search functions</strong> (ending in <code>_search</code>, like <code><a href="nva_publication_search.html">nva_publication_search()</a></code>)
+return tibbles with standardized columns optimized for browsing results.</p></li>
+</ul></div>
+
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p>Useful links:</p><ul><li><p><a href="https://roarst.github.io/nva/" class="external-link">https://roarst.github.io/nva/</a></p></li>
-<li><p>Report bugs at <a href="https://github.com/roarst/nva/issues" class="external-link">https://github.com/roarst/nva/issues</a></p></li>
+    <div class="dont-index"><p>Useful links:</p><ul><li><p><a href="https://roarstovner.github.io/nva/">https://roarstovner.github.io/nva/</a></p></li>
+<li><p>Report bugs at <a href="https://github.com/roarstovner/nva/issues" class="external-link">https://github.com/roarstovner/nva/issues</a></p></li>
 </ul></div>
     </div>
     <div class="section level2">

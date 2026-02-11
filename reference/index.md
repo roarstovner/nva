@@ -4,9 +4,11 @@
 
 Search publications in the NVA archive.
 
-- [`nva_search()`](https://roarstovner.github.io/nva/reference/nva_search.md)
+- [`nva_publication_search()`](https://roarstovner.github.io/nva/reference/nva_publication_search.md)
+  [`nva_search()`](https://roarstovner.github.io/nva/reference/nva_publication_search.md)
   : Search NVA publications
-- [`nva_search_aggregations()`](https://roarstovner.github.io/nva/reference/nva_search_aggregations.md)
+- [`nva_publication_search_aggregations()`](https://roarstovner.github.io/nva/reference/nva_publication_search_aggregations.md)
+  [`nva_search_aggregations()`](https://roarstovner.github.io/nva/reference/nva_publication_search_aggregations.md)
   : Get aggregations (facet counts) for an NVA search
 
 ## Publications
@@ -49,6 +51,10 @@ Look up organizations in the Cristin registry.
   : Get subunits of a Cristin organization
 - [`nva_cristin_organization_publications()`](https://roarstovner.github.io/nva/reference/nva_cristin_organization_publications.md)
   : Get publications for a Cristin organization
+- [`nva_cristin_organization_persons()`](https://roarstovner.github.io/nva/reference/nva_cristin_organization_persons.md)
+  : Get persons affiliated with a Cristin organization
+- [`nva_cristin_organization_projects()`](https://roarstovner.github.io/nva/reference/nva_cristin_organization_projects.md)
+  : Get projects associated with a Cristin organization
 
 ## Cristin Projects
 
@@ -60,10 +66,12 @@ Look up research projects in the Cristin registry.
   : Get multiple Cristin projects by identifiers
 - [`nva_cristin_project_search()`](https://roarstovner.github.io/nva/reference/nva_cristin_project_search.md)
   : Search for Cristin projects
+- [`nva_cristin_project_categories()`](https://roarstovner.github.io/nva/reference/nva_cristin_project_categories.md)
+  : Get Cristin project categories
 
 ## Cristin Other
 
-Keywords and funding sources from Cristin.
+Keywords, funding sources, and countries from Cristin.
 
 - [`nva_cristin_keyword()`](https://roarstovner.github.io/nva/reference/nva_cristin_keyword.md)
   : Get a Cristin keyword by ID
@@ -73,6 +81,8 @@ Keywords and funding sources from Cristin.
   : Get a specific funding source
 - [`nva_cristin_funding_source_search()`](https://roarstovner.github.io/nva/reference/nva_cristin_funding_source_search.md)
   : Search funding sources from Cristin
+- [`nva_cristin_countries()`](https://roarstovner.github.io/nva/reference/nva_cristin_countries.md)
+  : Get Cristin countries
 
 ## Verified Funding
 

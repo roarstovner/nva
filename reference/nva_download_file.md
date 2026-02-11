@@ -5,12 +5,12 @@ Downloads a file associated with a publication to a local path.
 ## Usage
 
 ``` r
-nva_download_file(file_id, destfile = NULL, overwrite = FALSE, progress = TRUE)
+nva_download_file(id, destfile = NULL, overwrite = FALSE, progress = TRUE)
 ```
 
 ## Arguments
 
-- file_id:
+- id:
 
   File identifier (from
   [`nva_publication_files()`](https://roarstovner.github.io/nva/reference/nva_publication_files.md))

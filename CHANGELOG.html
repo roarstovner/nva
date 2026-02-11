@@ -40,7 +40,20 @@
 <h2 id="id_010---2026-02-06">[0.1.0] - 2026-02-06<a class="anchor" aria-label="anchor" href="#id_010---2026-02-06"></a></h2>
 <div class="section level3">
 <h3 id="added">Added<a class="anchor" aria-label="anchor" href="#added"></a></h3>
-<ul><li>Add README with dynamic code examples (#48)</li>
+<ul><li>Reduce code duplication between nva_search and nva_search_aggregations parameter lists (#66)</li>
+<li>Add missing search filter parameters that the API supports (#74)</li>
+<li>Add input validation for ‘limit’ parameter across all search functions (#70)</li>
+<li>Fix schema functions not used consistently for empty returns (#76)</li>
+<li>Fix nva_cristin_organization_search not requiring any search parameter (#71)</li>
+<li>Add type column to nva_cristin_organization_search results (#78)</li>
+<li>Add wrapper for cristin/organization/{id}/projects endpoint (#53)</li>
+<li>Add wrapper for cristin/country endpoint (#56)</li>
+<li>Add documentation explaining singular vs plural function return types (#80)</li>
+<li>Add ‘sort_order’ parameter to nva_search for ascending/descending control (#72)</li>
+<li>Fix nva_cristin_project_search ‘keyword’ parameter to use ‘query’ convention (#58)</li>
+<li>Add wrapper for cristin/category/project endpoint (#55)</li>
+<li>Add wrapper for cristin/organization/{id}/persons endpoint (#52)</li>
+<li>Add README with dynamic code examples (#48)</li>
 <li>Add GitHub Actions workflow for pkgdown site deployment (#47)</li>
 <li>Add getting-started vignette (#39)</li>
 <li>Add GitHub Actions CI (#42)</li>
@@ -62,12 +75,21 @@
 </ul></div>
 <div class="section level3">
 <h3 id="fixed">Fixed<a class="anchor" aria-label="anchor" href="#fixed"></a></h3>
-<ul><li>Fix missing dplyr and withr in test Suggests (#44)</li>
+<ul><li>Fix inconsistent output columns between nva_search and nva_publications (#62)</li>
+<li>Fix nva_fetch_all using ‘results’ param instead of correct API param name (#69)</li>
+<li>Fix nva_verified_funding_nfr_search parameter naming: ‘nfr_project_id’ should follow conventions (#60)</li>
+<li>Fix nva_download_file parameter naming: ‘file_id’ should be ‘id’ (#59)</li>
+<li>Fix nva_cristin_project_search title extraction fragility (#77)</li>
+<li>Fix nva_download_file not using nva_request() infrastructure (#68)</li>
+<li>Fix nva_download_file using hardcoded incorrect GitHub URL in user agent (#67)</li>
+<li>Fix pkgdown site URL to use correct GitHub username (#49)</li>
+<li>Fix missing dplyr and withr in test Suggests (#44)</li>
 <li>Fix year parameter from ‘year’ to ‘publicationYear’ in nva_search (#33)</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changed">Changed<a class="anchor" aria-label="anchor" href="#changed"></a></h3>
-<ul><li>Add .Rbuildignore for dev files (#45)</li>
+<ul><li>Fix nva_search function name to follow naming convention (#73)</li>
+<li>Add .Rbuildignore for dev files (#45)</li>
 <li>Add tests for schema functions in schemas.R (#43)</li>
 <li>Fix user-agent and add DESCRIPTION metadata (#41)</li>
 <li>Add nva_search_aggregations() as separate function for search facet counts (#36)</li>

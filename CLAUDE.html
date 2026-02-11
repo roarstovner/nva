@@ -55,9 +55,11 @@
 <ul><li>All exported functions use <code>nva_</code> prefix</li>
 <li>Single-item getters: <code>nva_cristin_person(id)</code>, <code>nva_publication(id)</code>
 </li>
-<li>Search/list functions: use <code>_search</code> suffix - <code><a href="reference/nva_cristin_person_search.html">nva_cristin_person_search()</a></code>, <code><a href="reference/nva_cristin_project_search.html">nva_cristin_project_search()</a></code>
+<li>Search/list functions: use <code>_search</code> suffix - <code><a href="reference/nva_publication_search.html">nva_publication_search()</a></code>, <code><a href="reference/nva_cristin_person_search.html">nva_cristin_person_search()</a></code>
 </li>
 <li>Related data: <code><a href="reference/nva_cristin_person_publications.html">nva_cristin_person_publications()</a></code>, <code><a href="reference/nva_publication_files.html">nva_publication_files()</a></code>
+</li>
+<li>Multi-item fetchers: plural form - <code>nva_publications(ids)</code>, <code>nva_cristin_persons(ids)</code>
 </li>
 </ul></div>
 <div class="section level3">
@@ -72,8 +74,24 @@
 <li>Use <code>id</code> for Cristin resource IDs</li>
 </ul></div>
 <div class="section level3">
+<h3 id="http-requests">HTTP Requests<a class="anchor" aria-label="anchor" href="#http-requests"></a></h3>
+<ul><li>All HTTP requests MUST go through <code>nva_request()</code> in <code>utils-request.R</code>
+</li>
+<li>Never build requests with raw <code><a href="https://httr2.r-lib.org/reference/request.html" class="external-link">httr2::request()</a></code> — this bypasses auth, throttling, retry, and error handling</li>
+</ul></div>
+<div class="section level3">
+<h3 id="labeltitle-extraction">Label/Title Extraction<a class="anchor" aria-label="anchor" href="#labeltitle-extraction"></a></h3>
+<ul><li>Always use <code>nva_get_label(labels)</code> when extracting human-readable names from API responses</li>
+<li>This ensures consistent language preference (en &gt; nb &gt; nn) across the package</li>
+<li>Never pick a hardcoded index like <code>titles[[1]]</code> — use <code>nva_get_label()</code> instead</li>
+</ul></div>
+<div class="section level3">
 <h3 id="utility-functions-internal">Utility Functions (internal)<a class="anchor" aria-label="anchor" href="#utility-functions-internal"></a></h3>
 <ul><li>
+<code>nva_request(endpoint, ...)</code> - Build authenticated, throttled request (ALL requests go through this)</li>
+<li>
+<code>nva_get(endpoint, ...)</code> - Request + perform + parse JSON</li>
+<li>
 <code>nva_get_tibble(endpoint, ...)</code> - Request + perform + convert to tibble</li>
 <li>
 <code>nva_extract_id(url, resource)</code> - Extract ID from API URLs</li>
@@ -94,6 +112,12 @@
 <h3 id="return-types">Return Types<a class="anchor" aria-label="anchor" href="#return-types"></a></h3>
 <ul><li>Single-item getters (<code>nva_publication</code>, <code>nva_cristin_person</code>): Return raw list from API</li>
 <li>Search functions: Return tibble with parsed/cleaned data</li>
+<li>Search and detail tibbles for the same resource may have different columns (detail endpoints return more data)</li>
+</ul></div>
+<div class="section level3">
+<h3 id="input-validation">Input Validation<a class="anchor" aria-label="anchor" href="#input-validation"></a></h3>
+<ul><li>Validate <code>limit</code> bounds (1-100) in search functions</li>
+<li>All single-item getters must validate that <code>id</code> is non-empty</li>
 </ul></div>
 </div>
 

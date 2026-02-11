@@ -43,6 +43,10 @@ A tibble with one row per publication containing:
 
   List of contributor names
 
+- institutions:
+
+  List of top-level institution names
+
 - doi:
 
   DOI if available
