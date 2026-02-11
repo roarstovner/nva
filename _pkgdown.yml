@@ -7,8 +7,8 @@ reference:
   - title: Search
     desc: Search publications in the NVA archive.
     contents:
-      - nva_search
-      - nva_search_aggregations
+      - nva_publication_search
+      - nva_publication_search_aggregations
 
   - title: Publications
     desc: Retrieve and download publications and files.
@@ -34,6 +34,8 @@ reference:
       - nva_cristin_organization_search
       - nva_cristin_organization_subunits
       - nva_cristin_organization_publications
+      - nva_cristin_organization_persons
+      - nva_cristin_organization_projects
 
   - title: Cristin Projects
     desc: Look up research projects in the Cristin registry.
@@ -41,14 +43,16 @@ reference:
       - nva_cristin_project
       - nva_cristin_projects
       - nva_cristin_project_search
+      - nva_cristin_project_categories
 
   - title: Cristin Other
-    desc: Keywords and funding sources from Cristin.
+    desc: Keywords, funding sources, and countries from Cristin.
     contents:
       - nva_cristin_keyword
       - nva_cristin_keyword_search
       - nva_cristin_funding_source
       - nva_cristin_funding_source_search
+      - nva_cristin_countries
 
   - title: Verified Funding
     desc: Look up verified funding from the Research Council of Norway.
