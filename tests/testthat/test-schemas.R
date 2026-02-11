@@ -8,7 +8,7 @@ test_that("schema_publication_search returns correct structure", {
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 0)
   expect_named(result, c("identifier", "title", "type", "year", "status",
-                         "contributors", "institutions"))
+                         "contributors", "institutions", "doi"))
   expect_type(result$identifier, "character")
   expect_type(result$title, "character")
   expect_type(result$type, "character")
@@ -16,6 +16,7 @@ test_that("schema_publication_search returns correct structure", {
   expect_type(result$status, "character")
   expect_type(result$contributors, "list")
   expect_type(result$institutions, "list")
+  expect_type(result$doi, "character")
 })
 
 # -- schema_publication_detail --
@@ -26,7 +27,7 @@ test_that("schema_publication_detail returns correct structure", {
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 0)
   expect_named(result, c("identifier", "title", "type", "year", "status",
-                         "contributors", "doi"))
+                         "contributors", "institutions", "doi"))
   expect_type(result$identifier, "character")
   expect_type(result$year, "integer")
   expect_type(result$contributors, "list")
@@ -57,11 +58,12 @@ test_that("schema_cristin_organization returns correct structure", {
 
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 0)
-  expect_named(result, c("id", "name", "acronym", "country"))
+  expect_named(result, c("id", "name", "acronym", "country", "type"))
   expect_type(result$id, "character")
   expect_type(result$name, "character")
   expect_type(result$acronym, "character")
   expect_type(result$country, "character")
+  expect_type(result$type, "character")
 })
 
 # -- schema_cristin_organization_detail --

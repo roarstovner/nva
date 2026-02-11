@@ -4,10 +4,10 @@
 \alias{nva_download_file}
 \title{Download a file from a publication}
 \usage{
-nva_download_file(file_id, destfile = NULL, overwrite = FALSE, progress = TRUE)
+nva_download_file(id, destfile = NULL, overwrite = FALSE, progress = TRUE)
 }
 \arguments{
-\item{file_id}{File identifier (from \code{nva_publication_files()})}
+\item{id}{File identifier (from \code{nva_publication_files()})}
 
 \item{destfile}{Destination file path. If NULL, uses the original filename
 in the current working directory.}

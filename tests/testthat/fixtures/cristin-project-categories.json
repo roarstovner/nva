@@ -1,0 +1,28 @@
+{
+  "hits": [
+    {
+      "code": "BASICRESEARCH",
+      "name": {
+        "en": "Basic research",
+        "nb": "Grunnforskning"
+      }
+    },
+    {
+      "code": "APPLIEDRESEARCH",
+      "name": {
+        "en": "Applied research",
+        "nb": "Anvendt forskning"
+      }
+    },
+    {
+      "code": "EXPERIMENTALDEVELOPMENT",
+      "name": {
+        "en": "Experimental development",
+        "nb": "Eksperimentell utvikling"
+      }
+    }
+  ],
+  "totalHits": 3,
+  "size": 3,
+  "offset": 0
+}

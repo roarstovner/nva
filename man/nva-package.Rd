@@ -8,11 +8,27 @@
 \description{
 Provides functions for accessing the Norwegian National Research Archive (NVA) API. Includes support for searching publications, retrieving metadata, accessing Cristin data, and downloading files.
 }
+\details{
+\subsection{Return Types}{
+
+Functions in this package follow a consistent return type convention:
+\itemize{
+\item \strong{Singular functions} (\code{nva_publication()}, \code{nva_cristin_person()}) return
+raw list objects from the API, preserving the full JSON structure for
+maximum flexibility.
+\item \strong{Plural functions} (\code{nva_publications()}, \code{nva_cristin_persons()}) return
+tibbles with parsed and cleaned data. These tibbles may have different
+columns than search results since detail endpoints provide more information.
+\item \strong{Search functions} (ending in \verb{_search}, like \code{nva_publication_search()})
+return tibbles with standardized columns optimized for browsing results.
+}
+}
+}
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://roarst.github.io/nva/}
-  \item Report bugs at \url{https://github.com/roarst/nva/issues}
+  \item \url{https://roarstovner.github.io/nva/}
+  \item Report bugs at \url{https://github.com/roarstovner/nva/issues}
 }
 
 }

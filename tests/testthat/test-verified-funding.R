@@ -74,7 +74,7 @@ test_that("nva_verified_funding_nfr_search errors when no parameters", {
 test_that("nva_verified_funding_nfr_search accepts project_id only", {
   local_mock_nva(mock_from_fixture("nfr-funding-search.json"))
 
-  expect_no_error(nva_verified_funding_nfr_search(nfr_project_id = "123456"))
+  expect_no_error(nva_verified_funding_nfr_search(project_id = "123456"))
 })
 
 test_that("nva_verified_funding_nfr_search returns empty schema for no results", {
@@ -98,7 +98,7 @@ test_that("nva_verified_funding_nfr_search passes query parameters correctly", {
   with_mock_nva(mock_fn, {
     nva_verified_funding_nfr_search(
       query = "climate",
-      nfr_project_id = "123456",
+      project_id = "123456",
       limit = 25,
       page = 2
     )

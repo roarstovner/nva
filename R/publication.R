@@ -44,6 +44,7 @@ nva_publication <- function(id) {
 #'   \item{year}{Publication year}
 #'   \item{status}{Publication status}
 #'   \item{contributors}{List of contributor names}
+#'   \item{institutions}{List of top-level institution names}
 #'   \item{doi}{DOI if available}
 #' }
 #'
@@ -57,27 +58,18 @@ nva_publication <- function(id) {
 #' pubs <- nva_publications(ids)
 #' }
 nva_publications <- function(ids) {
+  # Maintain original validation: publications requires character input
   if (!is.character(ids) || length(ids) == 0) {
     cli::cli_abort("{.arg ids} must be a non-empty character vector.")
   }
 
-  pubs <- purrr::map(ids, \(pub_id) {
-    tryCatch(
-      nva_publication(pub_id),
-      error = function(e) {
-        cli::cli_warn("Failed to fetch publication {.val {pub_id}}: {e$message}")
-        NULL
-      }
-    )
-  })
-
-  valid_pubs <- purrr::compact(pubs)
-
-  if (length(valid_pubs) == 0) {
-    return(schema_publication_detail())
-  }
-
-  nva_parse_publications(valid_pubs)
+  nva_fetch_multiple(
+    ids = ids,
+    fetch_fn = nva_publication,
+    parse_fn = nva_parse_publications,
+    empty_schema = schema_publication_detail,
+    resource_name = "publication"
+  )
 }
 
 #' Parse publication list into tibble
@@ -106,6 +98,11 @@ nva_parse_publications <- function(pubs) {
     contributors = purrr::map(pubs, \(x) {
       contribs <- x$entityDescription$contributors %||% list()
       purrr::map_chr(contribs, \(c) c$identity$name %||% NA_character_)
+    }),
+    institutions = purrr::map(pubs, \(x) {
+      orgs <- x$topLevelOrganizations %||% list()
+      if (length(orgs) == 0) return(character())
+      purrr::map_chr(orgs, \(o) nva_get_label(o$labels))
     }),
     doi = purrr::map_chr(pubs, \(x) {
       ref <- x$entityDescription$reference
@@ -173,7 +170,7 @@ nva_publication_files <- function(id) {
 #'
 #' Downloads a file associated with a publication to a local path.
 #'
-#' @param file_id File identifier (from `nva_publication_files()`)
+#' @param id File identifier (from `nva_publication_files()`)
 #' @param destfile Destination file path. If NULL, uses the original filename
 #'   in the current working directory.
 #' @param overwrite Logical. Should existing files be overwritten? Default FALSE.
@@ -194,10 +191,10 @@ nva_publication_files <- function(id) {
 #' # Download with original filename
 #' nva_download_file(files$identifier[1])
 #' }
-nva_download_file <- function(file_id, destfile = NULL, overwrite = FALSE,
+nva_download_file <- function(id, destfile = NULL, overwrite = FALSE,
                               progress = TRUE) {
-  if (missing(file_id) || is.null(file_id) || !nzchar(file_id)) {
-    cli::cli_abort("{.arg file_id} must be a non-empty string.")
+  if (missing(id) || is.null(id) || !nzchar(id)) {
+    cli::cli_abort("{.arg id} must be a non-empty string.")
   }
 
   if (is.null(destfile)) {
@@ -213,13 +210,7 @@ nva_download_file <- function(file_id, destfile = NULL, overwrite = FALSE,
     )
   }
 
-  req <- httr2::request("https://api.nva.unit.no") |>
-    httr2::req_url_path_append("download", "public", file_id) |>
-    httr2::req_user_agent("nva R package (https://github.com/ropensci/nva)") |>
-    httr2::req_retry(
-      max_tries = 3,
-      is_transient = \(resp) httr2::resp_status(resp) %in% c(429L, 503L)
-    )
+  req <- nva_request(paste0("download/public/", id))
 
   if (progress) {
     req <- httr2::req_progress(req)

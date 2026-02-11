@@ -43,7 +43,7 @@ test_that("nva_publications returns tibble with expected columns", {
 
   expect_s3_class(result, "tbl_df")
   expect_named(result, c("identifier", "title", "type", "year", "status",
-                         "contributors", "doi"))
+                         "contributors", "institutions", "doi"))
 })
 
 test_that("nva_publications parses data correctly", {
@@ -58,6 +58,7 @@ test_that("nva_publications parses data correctly", {
   expect_equal(result$year[1], 2024L)
   expect_equal(result$status[1], "PUBLISHED")
   expect_equal(result$contributors[[1]], c("Test Author", "Second Author"))
+  expect_equal(result$institutions[[1]], "OsloMet - Oslo Metropolitan University")
   expect_equal(result$doi[1], "https://doi.org/10.18637/jss.v000.i00")
 })
 
@@ -81,7 +82,7 @@ test_that("nva_publications returns empty schema on all failures", {
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 0)
   expect_named(result, c("identifier", "title", "type", "year", "status",
-                         "contributors", "doi"))
+                         "contributors", "institutions", "doi"))
 })
 
 # -- nva_publication_files() tests --
@@ -167,7 +168,7 @@ test_that("nva_publication_files returns empty schema when only links", {
 
 # -- nva_download_file() tests --
 
-test_that("nva_download_file errors on missing file_id", {
+test_that("nva_download_file errors on missing id", {
   expect_error(nva_download_file(), class = "rlang_error")
   expect_error(nva_download_file(NULL, destfile = "test.pdf"), class = "rlang_error")
   expect_error(nva_download_file("", destfile = "test.pdf"), class = "rlang_error")
@@ -206,7 +207,7 @@ test_that("nva_download_file constructs correct URL", {
   tmp <- tempfile(fileext = ".pdf")
   on.exit(unlink(tmp))
 
-  httr2::with_mocked_responses(mock_download, {
+  with_mock_nva(mock_download, {
     nva_download_file("test-file-uuid", destfile = tmp, progress = FALSE)
   })
 

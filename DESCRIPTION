@@ -18,7 +18,8 @@ Imports:
     tidyr,
     purrr,
     rlang (>= 1.0.0),
-    cli
+    cli,
+    lifecycle
 Suggests:
     dplyr,
     jsonlite,

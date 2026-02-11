@@ -17,7 +17,8 @@ schema_publication_search <- function() {
     year = "int",
     status = "chr",
     contributors = "list",
-    institutions = "list"
+    institutions = "list",
+    doi = "chr"
   )
 }
 
@@ -30,6 +31,7 @@ schema_publication_detail <- function() {
     year = "int",
     status = "chr",
     contributors = "list",
+    institutions = "list",
     doi = "chr"
   )
 }
@@ -52,7 +54,8 @@ schema_cristin_organization <- function() {
     id = "chr",
     name = "chr",
     acronym = "chr",
-    country = "chr"
+    country = "chr",
+    type = "chr"
   )
 }
 
@@ -147,5 +150,21 @@ schema_nfr_funding <- function() {
     title = "chr",
     status = "chr",
     amount = "dbl"
+  )
+}
+
+#' @noRd
+schema_cristin_project_category <- function() {
+  nva_empty_tibble(
+    code = "chr",
+    name = "chr"
+  )
+}
+
+#' @noRd
+schema_cristin_countries <- function() {
+  nva_empty_tibble(
+    code = "chr",
+    name = "chr"
   )
 }

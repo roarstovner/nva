@@ -58,7 +58,7 @@ test_that("nva_cristin_projects parses data correctly", {
 
   expect_equal(nrow(result), 1)
   expect_equal(result$id[1], "123456")
-  expect_equal(result$title[1], "Klimaendringer og havnivå")
+  expect_equal(result$title[1], "Climate Change and Sea Level")
   expect_equal(result$status[1], "ACTIVE")
   expect_equal(result$start_date[1], "2020-01-01")
   expect_equal(result$end_date[1], "2025-12-31")
@@ -129,6 +129,12 @@ test_that("nva_cristin_projects returns empty schema when all fail", {
 })
 
 # -- nva_cristin_project_search() tests --
+
+test_that("nva_cristin_project_search validates limit parameter", {
+  expect_error(nva_cristin_project_search(query = "test", limit = 0), class = "rlang_error")
+  expect_error(nva_cristin_project_search(query = "test", limit = 101), class = "rlang_error")
+  expect_error(nva_cristin_project_search(query = "test", limit = -1), class = "rlang_error")
+})
 
 test_that("nva_cristin_project_search returns tibble with expected columns", {
   local_mock_nva(mock_from_fixture("cristin-project-search.json"))
@@ -215,4 +221,37 @@ test_that("nva_cristin_project_search passes query parameters correctly", {
   expect_equal(parsed$query$status, "ACTIVE")
   expect_equal(parsed$query$results, "25")
   expect_equal(parsed$query$page, "2")
+})
+
+# -- nva_cristin_project_categories() tests --
+
+test_that("nva_cristin_project_categories returns tibble with expected columns", {
+  local_mock_nva(mock_from_fixture("cristin-project-categories.json"))
+
+  result <- nva_cristin_project_categories()
+
+  expect_s3_class(result, "tbl_df")
+  expect_named(result, c("code", "name"))
+})
+
+test_that("nva_cristin_project_categories parses data correctly", {
+  local_mock_nva(mock_from_fixture("cristin-project-categories.json"))
+
+  result <- nva_cristin_project_categories()
+
+  expect_equal(nrow(result), 3)
+  expect_equal(result$code[1], "BASICRESEARCH")
+  expect_equal(result$name[1], "Basic research")
+  expect_equal(result$code[2], "APPLIEDRESEARCH")
+  expect_equal(result$name[2], "Applied research")
+})
+
+test_that("nva_cristin_project_categories returns empty schema for no results", {
+  local_mock_nva(mock_from_fixture("empty-search.json"))
+
+  result <- nva_cristin_project_categories()
+
+  expect_s3_class(result, "tbl_df")
+  expect_equal(nrow(result), 0)
+  expect_named(result, c("code", "name"))
 })

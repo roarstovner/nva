@@ -18,6 +18,7 @@ A tibble with one row per publication containing:
 \item{year}{Publication year}
 \item{status}{Publication status}
 \item{contributors}{List of contributor names}
+\item{institutions}{List of top-level institution names}
 \item{doi}{DOI if available}
 }
 }

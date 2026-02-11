@@ -39,6 +39,12 @@ test_that("nva_cristin_keyword accepts numeric or character id", {
 
 # -- nva_cristin_keyword_search() tests --
 
+test_that("nva_cristin_keyword_search validates limit parameter", {
+  expect_error(nva_cristin_keyword_search(query = "test", limit = 0), class = "rlang_error")
+  expect_error(nva_cristin_keyword_search(query = "test", limit = 101), class = "rlang_error")
+  expect_error(nva_cristin_keyword_search(query = "test", limit = -1), class = "rlang_error")
+})
+
 test_that("nva_cristin_keyword_search returns tibble with expected columns", {
   local_mock_nva(mock_from_fixture("cristin-keyword-search.json"))
 
@@ -138,6 +144,12 @@ test_that("nva_cristin_funding_source accepts character id", {
 
 # -- nva_cristin_funding_source_search() tests --
 
+test_that("nva_cristin_funding_source_search validates limit parameter", {
+  expect_error(nva_cristin_funding_source_search(limit = 0), class = "rlang_error")
+  expect_error(nva_cristin_funding_source_search(limit = 101), class = "rlang_error")
+  expect_error(nva_cristin_funding_source_search(limit = -1), class = "rlang_error")
+})
+
 test_that("nva_cristin_funding_source_search returns tibble with expected columns", {
   local_mock_nva(mock_from_fixture("cristin-funding-sources-search.json"))
 
@@ -188,4 +200,39 @@ test_that("nva_cristin_funding_source_search passes pagination correctly", {
   parsed <- httr2::url_parse(captured_req$url)
   expect_equal(parsed$query$results, "50")
   expect_equal(parsed$query$page, "2")
+})
+
+# -- nva_cristin_countries() tests --
+
+test_that("nva_cristin_countries returns tibble with expected columns", {
+  local_mock_nva(mock_from_fixture("cristin-countries.json"))
+
+  result <- nva_cristin_countries()
+
+  expect_s3_class(result, "tbl_df")
+  expect_named(result, c("code", "name"))
+})
+
+test_that("nva_cristin_countries parses data correctly", {
+  local_mock_nva(mock_from_fixture("cristin-countries.json"))
+
+  result <- nva_cristin_countries()
+
+  expect_equal(nrow(result), 3)
+  expect_equal(result$code[1], "NO")
+  expect_equal(result$name[1], "Norway")
+  expect_equal(result$code[2], "SE")
+  expect_equal(result$name[2], "Sweden")
+  expect_equal(result$code[3], "DK")
+  expect_equal(result$name[3], "Denmark")
+})
+
+test_that("nva_cristin_countries returns empty schema for no results", {
+  local_mock_nva(mock_from_fixture("empty-search.json"))
+
+  result <- nva_cristin_countries()
+
+  expect_s3_class(result, "tbl_df")
+  expect_equal(nrow(result), 0)
+  expect_named(result, c("code", "name"))
 })

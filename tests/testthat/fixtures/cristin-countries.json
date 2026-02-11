@@ -1,0 +1,28 @@
+{
+  "hits": [
+    {
+      "code": "NO",
+      "name": {
+        "en": "Norway",
+        "nb": "Norge"
+      }
+    },
+    {
+      "code": "SE",
+      "name": {
+        "en": "Sweden",
+        "nb": "Sverige"
+      }
+    },
+    {
+      "code": "DK",
+      "name": {
+        "en": "Denmark",
+        "nb": "Danmark"
+      }
+    }
+  ],
+  "totalHits": 3,
+  "size": 3,
+  "offset": 0
+}

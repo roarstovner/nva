@@ -14,11 +14,11 @@ nva_cristin_project_search(
 )
 }
 \arguments{
-\item{query}{Project title to search for}
+\item{query}{Project title to search for (searches in project title field)}
 
 \item{organization}{Cristin organization ID to filter by}
 
-\item{keyword}{Keyword to search for}
+\item{keyword}{Keyword to search for (searches in project keyword tags, separate from title)}
 
 \item{status}{Project status ("ACTIVE", "CONCLUDED", or "NOTSTARTED")}
 
@@ -44,7 +44,10 @@ Search the Cristin project registry.
 # Search for projects by title
 nva_cristin_project_search(query = "climate")
 
-# Search for active projects
-nva_cristin_project_search(status = "ACTIVE")
+# Search for projects by keyword tag
+nva_cristin_project_search(keyword = "sustainability")
+
+# Combine multiple search criteria
+nva_cristin_project_search(query = "climate", status = "ACTIVE")
 }
 }

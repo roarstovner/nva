@@ -119,6 +119,12 @@ test_that("nva_cristin_persons skips failed fetches and returns rest", {
 
 # -- nva_cristin_person_search() tests --
 
+test_that("nva_cristin_person_search validates limit parameter", {
+  expect_error(nva_cristin_person_search(query = "test", limit = 0), class = "rlang_error")
+  expect_error(nva_cristin_person_search(query = "test", limit = 101), class = "rlang_error")
+  expect_error(nva_cristin_person_search(query = "test", limit = -1), class = "rlang_error")
+})
+
 test_that("nva_cristin_person_search returns tibble with expected columns", {
   local_mock_nva(mock_from_fixture("cristin-person-search.json"))
 
@@ -210,6 +216,12 @@ test_that("nva_cristin_person_search passes query parameters correctly", {
 
 # -- nva_cristin_person_publications() tests --
 
+test_that("nva_cristin_person_publications validates limit parameter", {
+  expect_error(nva_cristin_person_publications(12345, limit = 0), class = "rlang_error")
+  expect_error(nva_cristin_person_publications(12345, limit = 101), class = "rlang_error")
+  expect_error(nva_cristin_person_publications(12345, limit = -1), class = "rlang_error")
+})
+
 test_that("nva_cristin_person_publications returns publication tibble", {
   local_mock_nva(mock_from_fixture("search-publications.json"))
 
@@ -217,7 +229,7 @@ test_that("nva_cristin_person_publications returns publication tibble", {
 
   expect_s3_class(result, "tbl_df")
   expect_named(result, c("identifier", "title", "type", "year", "status",
-                         "contributors", "institutions"))
+                         "contributors", "institutions", "doi"))
 })
 
 test_that("nva_cristin_person_publications errors on missing id", {
@@ -233,7 +245,7 @@ test_that("nva_cristin_person_publications returns empty schema for no results",
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 0)
   expect_named(result, c("identifier", "title", "type", "year", "status",
-                         "contributors", "institutions"))
+                         "contributors", "institutions", "doi"))
 })
 
 test_that("nva_cristin_person_publications passes parameters correctly", {

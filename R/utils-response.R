@@ -81,13 +81,18 @@ nva_resp_body_tibble <- function(resp, flatten = TRUE) {
 #'
 #' @param body Parsed JSON body (list)
 #' @param flatten Whether to flatten nested structures
+#' @param empty_schema Optional schema function to call when no results found.
+#'   If NULL (default), returns empty tibble with no columns.
 #'
 #' @return A tibble
 #' @noRd
-nva_as_tibble <- function(body, flatten = TRUE) {
+nva_as_tibble <- function(body, flatten = TRUE, empty_schema = NULL) {
   if (is.list(body) && "hits" %in% names(body)) {
     hits <- body$hits
     if (length(hits) == 0) {
+      if (!is.null(empty_schema)) {
+        return(empty_schema())
+      }
       return(tibble::tibble())
     }
     tbl <- tibble::tibble(data = hits) |>
@@ -116,6 +121,48 @@ nva_pagination_info <- function(body) {
   )
 }
 
+#' Fetch multiple items by ID
+#'
+#' Helper function to fetch multiple items from single-item endpoints.
+#' Handles error handling and parsing. Assumes ids have already been validated
+#' by the calling function.
+#'
+#' @param ids Character vector of identifiers (already validated)
+#' @param fetch_fn Function to fetch a single item (e.g., nva_publication)
+#' @param parse_fn Function to parse list of results into tibble
+#' @param empty_schema Schema function for empty results
+#' @param resource_name Optional name of resource type for warning messages
+#'
+#' @return A tibble with parsed results
+#' @noRd
+nva_fetch_multiple <- function(ids, fetch_fn, parse_fn, empty_schema, resource_name = NULL) {
+  # Fetch each item with error handling
+  items <- purrr::map(ids, \(id) {
+    tryCatch(
+      fetch_fn(id),
+      error = function(e) {
+        if (!is.null(resource_name)) {
+          cli::cli_warn("Failed to fetch {resource_name} {.val {id}}: {e$message}")
+        } else {
+          cli::cli_warn("Failed to fetch {.val {id}}: {e$message}")
+        }
+        NULL
+      }
+    )
+  })
+
+  # Remove NULLs from failed fetches
+  valid_items <- purrr::compact(items)
+
+  # Return empty schema if no valid results
+  if (length(valid_items) == 0) {
+    return(empty_schema())
+  }
+
+  # Parse and return
+  parse_fn(valid_items)
+}
+
 #' Fetch all pages from a paginated endpoint
 #'
 #' @param endpoint API endpoint path
@@ -123,10 +170,12 @@ nva_pagination_info <- function(body) {
 #' @param results_per_page Number of results per page (default: 100)
 #' @param max_results Maximum total results to fetch (default: Inf)
 #' @param progress Show progress bar (default: TRUE)
+#' @param empty_schema Optional schema function to call when no results found.
+#'   If NULL (default), returns empty tibble with no columns.
 #'
 #' @return A tibble with all results
 #' @noRd
-nva_fetch_all <- function(endpoint, ..., results_per_page = 100L, max_results = Inf, progress = TRUE) {
+nva_fetch_all <- function(endpoint, ..., results_per_page = 100L, max_results = Inf, progress = TRUE, empty_schema = NULL) {
   offset <- 0L
   all_results <- list()
   total <- NULL
@@ -136,7 +185,7 @@ nva_fetch_all <- function(endpoint, ..., results_per_page = 100L, max_results = 
   }
 
   repeat {
-    resp <- nva_request(endpoint, ..., results = results_per_page, offset = offset) |>
+    resp <- nva_request(endpoint, ..., results = results_per_page, from = offset) |>
       httr2::req_perform()
 
     body <- httr2::resp_body_json(resp)
@@ -171,6 +220,9 @@ nva_fetch_all <- function(endpoint, ..., results_per_page = 100L, max_results = 
   }
 
   if (length(all_results) == 0) {
+    if (!is.null(empty_schema)) {
+      return(empty_schema())
+    }
     return(tibble::tibble())
   }
 

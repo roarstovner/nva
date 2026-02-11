@@ -27,6 +27,7 @@ A tibble with columns:
 \item{name}{Organization name (prefers English, falls back to Norwegian)}
 \item{acronym}{Organization acronym}
 \item{country}{Country code}
+\item{type}{Organization type (e.g., university, research institute)}
 }
 }
 \description{

@@ -70,23 +70,13 @@ nva_cristin_persons <- function(ids) {
 
   ids <- as.character(ids)
 
-  persons <- purrr::map(ids, \(id) {
-    tryCatch(
-      nva_cristin_person(id),
-      error = function(e) {
-        cli::cli_warn("Failed to fetch person {.val {id}}: {e$message}")
-        NULL
-      }
-    )
-  })
-
-  valid_persons <- purrr::compact(persons)
-
-  if (length(valid_persons) == 0) {
-    return(schema_cristin_person_detail())
-  }
-
-  nva_parse_cristin_person_details(valid_persons)
+  nva_fetch_multiple(
+    ids = ids,
+    fetch_fn = nva_cristin_person,
+    parse_fn = nva_parse_cristin_person_details,
+    empty_schema = schema_cristin_person_detail,
+    resource_name = "person"
+  )
 }
 
 #' Parse Cristin person detail records into tibble
@@ -162,6 +152,10 @@ nva_cristin_person_search <- function(query = NULL,
     cli::cli_abort("At least one of {.arg query} or {.arg organization} must be provided.")
   }
 
+  if (limit < 1 || limit > 100) {
+    cli::cli_abort("{.arg limit} must be between 1 and 100.")
+  }
+
   tbl <- nva_get_tibble(
     "cristin/person",
     name = query,
@@ -218,7 +212,7 @@ nva_parse_cristin_persons <- function(tbl) {
 #' @param fetch_all If TRUE, fetch all publications. Default: FALSE
 #' @param max_results Maximum results when `fetch_all = TRUE` (default: Inf)
 #'
-#' @return A tibble with publication information (same format as nva_search)
+#' @return A tibble with publication information (same format as nva_publication_search)
 #'
 #' @export
 #'
@@ -240,6 +234,10 @@ nva_cristin_person_publications <- function(id,
     cli::cli_abort("{.arg id} is required.")
   }
 
+  if (limit < 1 || limit > 100) {
+    cli::cli_abort("{.arg limit} must be between 1 and 100.")
+  }
+
   id <- as.character(id)
 
   if (fetch_all) {
@@ -248,7 +246,8 @@ nva_cristin_person_publications <- function(id,
       contributor = id,
       publication_year = year,
       results_per_page = 100L,
-      max_results = max_results
+      max_results = max_results,
+      empty_schema = schema_publication_search
     )
   } else {
     tbl <- nva_get_tibble(

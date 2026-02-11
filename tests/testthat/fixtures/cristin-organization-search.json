@@ -7,7 +7,13 @@
         "nb": "Universitetet i Oslo"
       },
       "acronym": "UiO",
-      "country": "NO"
+      "country": "NO",
+      "institutionType": {
+        "labels": {
+          "en": "University",
+          "nb": "Universitet"
+        }
+      }
     },
     {
       "id": "https://api.nva.unit.no/cristin/organization/186.0.0.0",
@@ -15,7 +21,13 @@
         "nb": "OsloMet - storbyuniversitetet"
       },
       "acronym": "OsloMet",
-      "country": "NO"
+      "country": "NO",
+      "institutionType": {
+        "labels": {
+          "en": "University",
+          "nb": "Universitet"
+        }
+      }
     },
     {
       "id": "https://api.nva.unit.no/cristin/organization/7465.0.0.0",
@@ -23,7 +35,13 @@
         "en": "Oslo University Hospital",
         "nb": "Oslo universitetssykehus"
       },
-      "country": "NO"
+      "country": "NO",
+      "institutionType": {
+        "labels": {
+          "en": "Health enterprise",
+          "nb": "Helseforetak"
+        }
+      }
     }
   ],
   "totalHits": 3,

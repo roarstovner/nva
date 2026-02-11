@@ -28,6 +28,10 @@ nva_cristin_keyword_search <- function(query = NULL,
     cli::cli_abort("{.arg query} is required.")
   }
 
+  if (limit < 1 || limit > 100) {
+    cli::cli_abort("{.arg limit} must be between 1 and 100.")
+  }
+
   tbl <- nva_get_tibble(
     "cristin/keyword",
     name = query,
@@ -102,6 +106,10 @@ nva_parse_cristin_keywords <- function(tbl) {
 #' sources <- nva_cristin_funding_source_search()
 #' }
 nva_cristin_funding_source_search <- function(limit = 100L, page = 1L) {
+  if (limit < 1 || limit > 100) {
+    cli::cli_abort("{.arg limit} must be between 1 and 100.")
+  }
+
   tbl <- nva_get_tibble(
     "cristin/funding-sources",
     results = limit,
@@ -153,5 +161,44 @@ nva_parse_funding_sources <- function(tbl) {
       n[[1]] %||% NA_character_
     }),
     acronym = purrr::map_chr(tbl$acronym, \(a) a %||% NA_character_)
+  )
+}
+
+#' Get Cristin countries
+#'
+#' Retrieves the list of available countries from the Cristin registry.
+#'
+#' @return A tibble with columns:
+#' \describe{
+#'   \item{code}{Country code}
+#'   \item{name}{Country name (prefers English, falls back to Norwegian)}
+#' }
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' countries <- nva_cristin_countries()
+#' }
+nva_cristin_countries <- function() {
+  tbl <- nva_get_tibble("cristin/country")
+
+  if (nrow(tbl) == 0) {
+    return(schema_cristin_countries())
+  }
+
+  nva_parse_cristin_countries(tbl)
+}
+
+#' Parse Cristin country results
+#'
+#' @param tbl Raw tibble from API response
+#'
+#' @return Cleaned tibble
+#' @noRd
+nva_parse_cristin_countries <- function(tbl) {
+  tibble::tibble(
+    code = purrr::map_chr(tbl$code, \(x) x %||% NA_character_),
+    name = purrr::map_chr(tbl$name, nva_get_label)
   )
 }

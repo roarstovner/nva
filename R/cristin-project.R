@@ -2,9 +2,9 @@
 #'
 #' Search the Cristin project registry.
 #'
-#' @param query Project title to search for
+#' @param query Project title to search for (searches in project title field)
 #' @param organization Cristin organization ID to filter by
-#' @param keyword Keyword to search for
+#' @param keyword Keyword to search for (searches in project keyword tags, separate from title)
 #' @param status Project status ("ACTIVE", "CONCLUDED", or "NOTSTARTED")
 #' @param limit Number of results per page (default: 10)
 #' @param page Page number (default: 1)
@@ -25,8 +25,11 @@
 #' # Search for projects by title
 #' nva_cristin_project_search(query = "climate")
 #'
-#' # Search for active projects
-#' nva_cristin_project_search(status = "ACTIVE")
+#' # Search for projects by keyword tag
+#' nva_cristin_project_search(keyword = "sustainability")
+#'
+#' # Combine multiple search criteria
+#' nva_cristin_project_search(query = "climate", status = "ACTIVE")
 #' }
 nva_cristin_project_search <- function(query = NULL,
                                         organization = NULL,
@@ -36,6 +39,10 @@ nva_cristin_project_search <- function(query = NULL,
                                         page = 1L) {
   if (is.null(query) && is.null(organization) && is.null(keyword) && is.null(status)) {
     cli::cli_abort("At least one search parameter must be provided.")
+  }
+
+  if (limit < 1 || limit > 100) {
+    cli::cli_abort("{.arg limit} must be between 1 and 100.")
   }
 
   tbl <- nva_get_tibble(
@@ -118,23 +125,13 @@ nva_cristin_projects <- function(ids) {
 
   ids <- as.character(ids)
 
-  projects <- purrr::map(ids, \(id) {
-    tryCatch(
-      nva_cristin_project(id),
-      error = function(e) {
-        cli::cli_warn("Failed to fetch project {.val {id}}: {e$message}")
-        NULL
-      }
-    )
-  })
-
-  valid_projects <- purrr::compact(projects)
-
-  if (length(valid_projects) == 0) {
-    return(schema_cristin_project_detail())
-  }
-
-  nva_parse_cristin_project_details(valid_projects)
+  nva_fetch_multiple(
+    ids = ids,
+    fetch_fn = nva_cristin_project,
+    parse_fn = nva_parse_cristin_project_details,
+    empty_schema = schema_cristin_project_detail,
+    resource_name = "project"
+  )
 }
 
 #' Parse Cristin project detail records into tibble
@@ -146,10 +143,7 @@ nva_cristin_projects <- function(ids) {
 nva_parse_cristin_project_details <- function(projects) {
   tibble::tibble(
     id = purrr::map_chr(projects, \(p) nva_extract_id(p$id, "cristin/project")),
-    title = purrr::map_chr(projects, \(p) {
-      titles <- p$title %||% list()
-      if (length(titles) > 0) titles[[1]] else NA_character_
-    }),
+    title = purrr::map_chr(projects, \(p) nva_get_label(p$title)),
     status = purrr::map_chr(projects, \(p) p$status %||% NA_character_),
     start_date = purrr::map_chr(projects, \(p) p$startDate %||% NA_character_),
     end_date = purrr::map_chr(projects, \(p) p$endDate %||% NA_character_),
@@ -172,12 +166,48 @@ nva_parse_cristin_project_details <- function(projects) {
 nva_parse_cristin_projects <- function(tbl) {
   tibble::tibble(
     id = purrr::map_chr(tbl$id, \(x) nva_extract_id(x, "cristin/project")),
-    title = purrr::map_chr(tbl$title, \(titles) {
-      if (is.null(titles) || length(titles) == 0) return(NA_character_)
-      titles[[1]] %||% NA_character_
-    }),
+    title = purrr::map_chr(tbl$title, nva_get_label),
     status = tbl$status %||% NA_character_,
     start_date = purrr::map_chr(tbl$startDate, \(d) d %||% NA_character_),
     end_date = purrr::map_chr(tbl$endDate, \(d) d %||% NA_character_)
+  )
+}
+
+#' Get Cristin project categories
+#'
+#' Retrieves the list of available project categories from the Cristin registry.
+#'
+#' @return A tibble with columns:
+#' \describe{
+#'   \item{code}{Category code}
+#'   \item{name}{Category name (prefers English, falls back to Norwegian)}
+#' }
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' categories <- nva_cristin_project_categories()
+#' }
+nva_cristin_project_categories <- function() {
+  tbl <- nva_get_tibble("cristin/category/project")
+
+  if (nrow(tbl) == 0) {
+    return(schema_cristin_project_category())
+  }
+
+  nva_parse_cristin_project_categories(tbl)
+}
+
+#' Parse Cristin project category results
+#'
+#' @param tbl Raw tibble from API response
+#'
+#' @return Cleaned tibble
+#' @noRd
+nva_parse_cristin_project_categories <- function(tbl) {
+  tibble::tibble(
+    code = purrr::map_chr(tbl$code, \(x) x %||% NA_character_),
+    name = purrr::map_chr(tbl$name, nva_get_label)
   )
 }

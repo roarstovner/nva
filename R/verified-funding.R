@@ -3,7 +3,7 @@
 #' Search the Norwegian Research Council (NFR) verified funding registry.
 #'
 #' @param query Search query
-#' @param nfr_project_id NFR project ID
+#' @param project_id NFR project ID
 #' @param limit Number of results per page (default: 10)
 #' @param page Page number (default: 1)
 #'
@@ -23,20 +23,20 @@
 #' nva_verified_funding_nfr_search(query = "climate")
 #'
 #' # Search by project ID
-#' nva_verified_funding_nfr_search(nfr_project_id = "123456")
+#' nva_verified_funding_nfr_search(project_id = "123456")
 #' }
 nva_verified_funding_nfr_search <- function(query = NULL,
-                                             nfr_project_id = NULL,
+                                             project_id = NULL,
                                              limit = 10L,
                                              page = 1L) {
-  if (is.null(query) && is.null(nfr_project_id)) {
-    cli::cli_abort("At least one of {.arg query} or {.arg nfr_project_id} must be provided.")
+  if (is.null(query) && is.null(project_id)) {
+    cli::cli_abort("At least one of {.arg query} or {.arg project_id} must be provided.")
   }
 
   tbl <- nva_get_tibble(
     "verified-funding/nfr",
     query = query,
-    projectId = nfr_project_id,
+    projectId = project_id,
     results = limit,
     page = page
   )

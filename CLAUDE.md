@@ -15,8 +15,9 @@ Use the R package httr2 - check out the docs, including the vignette "Wrapping A
 ### Function Naming
 - All exported functions use `nva_` prefix
 - Single-item getters: `nva_cristin_person(id)`, `nva_publication(id)`
-- Search/list functions: use `_search` suffix - `nva_cristin_person_search()`, `nva_cristin_project_search()`
+- Search/list functions: use `_search` suffix - `nva_publication_search()`, `nva_cristin_person_search()`
 - Related data: `nva_cristin_person_publications()`, `nva_publication_files()`
+- Multi-item fetchers: plural form - `nva_publications(ids)`, `nva_cristin_persons(ids)`
 
 ### Parameter Naming
 Use these standard parameter names consistently:
@@ -33,7 +34,18 @@ Use these standard parameter names consistently:
 - Keep `identifier` for NVA publication IDs (UUID format, distinct from Cristin numeric IDs)
 - Use `id` for Cristin resource IDs
 
+### HTTP Requests
+- All HTTP requests MUST go through `nva_request()` in `utils-request.R`
+- Never build requests with raw `httr2::request()` — this bypasses auth, throttling, retry, and error handling
+
+### Label/Title Extraction
+- Always use `nva_get_label(labels)` when extracting human-readable names from API responses
+- This ensures consistent language preference (en > nb > nn) across the package
+- Never pick a hardcoded index like `titles[[1]]` — use `nva_get_label()` instead
+
 ### Utility Functions (internal)
+- `nva_request(endpoint, ...)` - Build authenticated, throttled request (ALL requests go through this)
+- `nva_get(endpoint, ...)` - Request + perform + parse JSON
 - `nva_get_tibble(endpoint, ...)` - Request + perform + convert to tibble
 - `nva_extract_id(url, resource)` - Extract ID from API URLs
 - `nva_get_label(labels)` - Get label with language preference (en > nb > nn)
@@ -50,4 +62,9 @@ if (nrow(tbl) == 0) {
 ### Return Types
 - Single-item getters (`nva_publication`, `nva_cristin_person`): Return raw list from API
 - Search functions: Return tibble with parsed/cleaned data
+- Search and detail tibbles for the same resource may have different columns (detail endpoints return more data)
+
+### Input Validation
+- Validate `limit` bounds (1-100) in search functions
+- All single-item getters must validate that `id` is non-empty
 

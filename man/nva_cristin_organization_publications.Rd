@@ -31,7 +31,7 @@ range as comma-separated values (e.g., "2020,2024" for years 2020-2024)}
 \item{max_results}{Maximum results when \code{fetch_all = TRUE} (default: Inf)}
 }
 \value{
-A tibble with publication information (same format as nva_search)
+A tibble with publication information (same format as nva_publication_search)
 }
 \description{
 Retrieves publications associated with a specific Cristin organization.

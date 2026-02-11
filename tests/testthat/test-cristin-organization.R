@@ -135,13 +135,19 @@ test_that("nva_cristin_organizations returns empty schema when all fail", {
 
 # -- nva_cristin_organization_search() tests --
 
+test_that("nva_cristin_organization_search validates limit parameter", {
+  expect_error(nva_cristin_organization_search(query = "test", limit = 0), class = "rlang_error")
+  expect_error(nva_cristin_organization_search(query = "test", limit = 101), class = "rlang_error")
+  expect_error(nva_cristin_organization_search(query = "test", limit = -1), class = "rlang_error")
+})
+
 test_that("nva_cristin_organization_search returns tibble with expected columns", {
   local_mock_nva(mock_from_fixture("cristin-organization-search.json"))
 
   result <- nva_cristin_organization_search(query = "oslo")
 
   expect_s3_class(result, "tbl_df")
-  expect_named(result, c("id", "name", "acronym", "country"))
+  expect_named(result, c("id", "name", "acronym", "country", "type"))
 })
 
 test_that("nva_cristin_organization_search parses data correctly", {
@@ -156,14 +162,17 @@ test_that("nva_cristin_organization_search parses data correctly", {
   expect_equal(result$name[1], "University of Oslo")
   expect_equal(result$acronym[1], "UiO")
   expect_equal(result$country[1], "NO")
+  expect_equal(result$type[1], "University")
 
   # Second org has only Norwegian label
   expect_equal(result$id[2], "186.0.0.0")
   expect_equal(result$name[2], "OsloMet - storbyuniversitetet")
+  expect_equal(result$type[2], "University")
 
-  # Third org has no acronym
+  # Third org has no acronym but has type
   expect_equal(result$id[3], "7465.0.0.0")
   expect_true(is.na(result$acronym[3]))
+  expect_equal(result$type[3], "Health enterprise")
 })
 
 test_that("nva_cristin_organization_search returns empty schema for no results", {
@@ -173,7 +182,7 @@ test_that("nva_cristin_organization_search returns empty schema for no results",
 
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 0)
-  expect_named(result, c("id", "name", "acronym", "country"))
+  expect_named(result, c("id", "name", "acronym", "country", "type"))
 })
 
 test_that("nva_cristin_organization_search validates depth parameter", {
@@ -185,6 +194,12 @@ test_that("nva_cristin_organization_search validates depth parameter", {
     nva_cristin_organization_search(query = "test", depth = "invalid"),
     class = "rlang_error"
   )
+})
+
+test_that("nva_cristin_organization_search requires query parameter", {
+  expect_error(nva_cristin_organization_search(), class = "rlang_error")
+  expect_error(nva_cristin_organization_search(query = NULL), class = "rlang_error")
+  expect_error(nva_cristin_organization_search(query = ""), class = "rlang_error")
 })
 
 test_that("nva_cristin_organization_search passes query parameters correctly", {
@@ -283,6 +298,12 @@ test_that("nva_cristin_organization_subunits returns empty schema for no subunit
 
 # -- nva_cristin_organization_publications() tests --
 
+test_that("nva_cristin_organization_publications validates limit parameter", {
+  expect_error(nva_cristin_organization_publications(185, limit = 0), class = "rlang_error")
+  expect_error(nva_cristin_organization_publications(185, limit = 101), class = "rlang_error")
+  expect_error(nva_cristin_organization_publications(185, limit = -1), class = "rlang_error")
+})
+
 test_that("nva_cristin_organization_publications returns publication tibble", {
   local_mock_nva(mock_from_fixture("search-publications.json"))
 
@@ -290,7 +311,7 @@ test_that("nva_cristin_organization_publications returns publication tibble", {
 
   expect_s3_class(result, "tbl_df")
   expect_named(result, c("identifier", "title", "type", "year", "status",
-                         "contributors", "institutions"))
+                         "contributors", "institutions", "doi"))
 })
 
 test_that("nva_cristin_organization_publications errors on missing id", {
@@ -306,7 +327,7 @@ test_that("nva_cristin_organization_publications returns empty schema for no res
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 0)
   expect_named(result, c("identifier", "title", "type", "year", "status",
-                         "contributors", "institutions"))
+                         "contributors", "institutions", "doi"))
 })
 
 test_that("nva_cristin_organization_publications passes parameters correctly", {
@@ -333,4 +354,142 @@ test_that("nva_cristin_organization_publications passes parameters correctly", {
   expect_equal(parsed$query$from, "20")
   expect_equal(parsed$query$publication_year, "2024")
   expect_equal(parsed$query$instanceType, "AcademicArticle")
+})
+
+# -- nva_cristin_organization_persons() tests --
+
+test_that("nva_cristin_organization_persons validates limit parameter", {
+  expect_error(nva_cristin_organization_persons(185, limit = 0), class = "rlang_error")
+  expect_error(nva_cristin_organization_persons(185, limit = 101), class = "rlang_error")
+  expect_error(nva_cristin_organization_persons(185, limit = -1), class = "rlang_error")
+})
+
+test_that("nva_cristin_organization_persons returns tibble with expected columns", {
+  local_mock_nva(mock_from_fixture("cristin-organization-persons.json"))
+
+  result <- nva_cristin_organization_persons(185)
+
+  expect_s3_class(result, "tbl_df")
+  expect_named(result, c("id", "first_name", "last_name", "affiliations"))
+})
+
+test_that("nva_cristin_organization_persons parses data correctly", {
+  local_mock_nva(mock_from_fixture("cristin-organization-persons.json"))
+
+  result <- nva_cristin_organization_persons(185)
+
+  expect_equal(nrow(result), 2)
+  expect_equal(result$id[1], "12345")
+  expect_equal(result$first_name[1], "Ola")
+  expect_equal(result$last_name[1], "Nordmann")
+  expect_equal(result$id[2], "67890")
+  expect_equal(result$first_name[2], "Kari")
+  expect_equal(result$last_name[2], "Hansen")
+})
+
+test_that("nva_cristin_organization_persons errors on missing id", {
+  expect_error(nva_cristin_organization_persons(), class = "rlang_error")
+  expect_error(nva_cristin_organization_persons(NULL), class = "rlang_error")
+})
+
+test_that("nva_cristin_organization_persons returns empty schema for no results", {
+  local_mock_nva(mock_from_fixture("empty-search.json"))
+
+  result <- nva_cristin_organization_persons("999")
+
+  expect_s3_class(result, "tbl_df")
+  expect_equal(nrow(result), 0)
+  expect_named(result, c("id", "first_name", "last_name", "affiliations"))
+})
+
+test_that("nva_cristin_organization_persons passes parameters correctly", {
+  captured_req <- NULL
+  mock_fn <- function(req) {
+    captured_req <<- req
+    body <- load_fixture("cristin-organization-persons.json")
+    mock_json_response(body, url = req$url)
+  }
+
+  with_mock_nva(mock_fn, {
+    nva_cristin_organization_persons(
+      id = "185",
+      limit = 50,
+      page = 2
+    )
+  })
+
+  parsed <- httr2::url_parse(captured_req$url)
+  expect_true(grepl("cristin/organization/185.0.0.0/persons", captured_req$url))
+  expect_equal(parsed$query$results, "50")
+  expect_equal(parsed$query$page, "2")
+})
+
+# -- nva_cristin_organization_projects() tests --
+
+test_that("nva_cristin_organization_projects validates limit parameter", {
+  expect_error(nva_cristin_organization_projects(185, limit = 0), class = "rlang_error")
+  expect_error(nva_cristin_organization_projects(185, limit = 101), class = "rlang_error")
+  expect_error(nva_cristin_organization_projects(185, limit = -1), class = "rlang_error")
+})
+
+test_that("nva_cristin_organization_projects returns tibble with expected columns", {
+  local_mock_nva(mock_from_fixture("cristin-organization-projects.json"))
+
+  result <- nva_cristin_organization_projects(185)
+
+  expect_s3_class(result, "tbl_df")
+  expect_named(result, c("id", "title", "status", "start_date", "end_date"))
+})
+
+test_that("nva_cristin_organization_projects parses data correctly", {
+  local_mock_nva(mock_from_fixture("cristin-organization-projects.json"))
+
+  result <- nva_cristin_organization_projects(185)
+
+  expect_equal(nrow(result), 2)
+  expect_equal(result$id[1], "123456")
+  expect_equal(result$title[1], "Climate Change and Sea Level")
+  expect_equal(result$status[1], "ACTIVE")
+  expect_equal(result$start_date[1], "2020-01-01")
+  expect_equal(result$end_date[1], "2025-12-31")
+  expect_equal(result$id[2], "789012")
+  expect_equal(result$title[2], "Biodiversitet i Norge")
+  expect_equal(result$status[2], "CONCLUDED")
+})
+
+test_that("nva_cristin_organization_projects errors on missing id", {
+  expect_error(nva_cristin_organization_projects(), class = "rlang_error")
+  expect_error(nva_cristin_organization_projects(NULL), class = "rlang_error")
+})
+
+test_that("nva_cristin_organization_projects returns empty schema for no results", {
+  local_mock_nva(mock_from_fixture("empty-search.json"))
+
+  result <- nva_cristin_organization_projects("999")
+
+  expect_s3_class(result, "tbl_df")
+  expect_equal(nrow(result), 0)
+  expect_named(result, c("id", "title", "status", "start_date", "end_date"))
+})
+
+test_that("nva_cristin_organization_projects passes parameters correctly", {
+  captured_req <- NULL
+  mock_fn <- function(req) {
+    captured_req <<- req
+    body <- load_fixture("cristin-organization-projects.json")
+    mock_json_response(body, url = req$url)
+  }
+
+  with_mock_nva(mock_fn, {
+    nva_cristin_organization_projects(
+      id = "185",
+      limit = 20,
+      page = 3
+    )
+  })
+
+  parsed <- httr2::url_parse(captured_req$url)
+  expect_true(grepl("cristin/organization/185.0.0.0/projects", captured_req$url))
+  expect_equal(parsed$query$results, "20")
+  expect_equal(parsed$query$page, "3")
 })

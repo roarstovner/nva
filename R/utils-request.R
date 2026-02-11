@@ -10,7 +10,7 @@ nva_request <- function(endpoint, ...) {
     httr2::req_url_path_append(endpoint) |>
     httr2::req_url_query(...) |>
     httr2::req_headers(Accept = "application/json") |>
-    httr2::req_user_agent("nva R package") |>
+    httr2::req_user_agent("nva R package (https://github.com/roarstovner/nva)") |>
     httr2::req_throttle(rate = 10 / 60) |>
     httr2::req_retry(
       max_tries = 3,

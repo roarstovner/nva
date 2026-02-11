@@ -6,7 +6,7 @@
 \usage{
 nva_verified_funding_nfr_search(
   query = NULL,
-  nfr_project_id = NULL,
+  project_id = NULL,
   limit = 10L,
   page = 1L
 )
@@ -14,7 +14,7 @@ nva_verified_funding_nfr_search(
 \arguments{
 \item{query}{Search query}
 
-\item{nfr_project_id}{NFR project ID}
+\item{project_id}{NFR project ID}
 
 \item{limit}{Number of results per page (default: 10)}
 
@@ -38,6 +38,6 @@ Search the Norwegian Research Council (NFR) verified funding registry.
 nva_verified_funding_nfr_search(query = "climate")
 
 # Search by project ID
-nva_verified_funding_nfr_search(nfr_project_id = "123456")
+nva_verified_funding_nfr_search(project_id = "123456")
 }
 }

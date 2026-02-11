@@ -71,23 +71,13 @@ nva_cristin_organizations <- function(ids) {
 
   ids <- as.character(ids)
 
-  orgs <- purrr::map(ids, \(id) {
-    tryCatch(
-      nva_cristin_organization(id),
-      error = function(e) {
-        cli::cli_warn("Failed to fetch organization {.val {id}}: {e$message}")
-        NULL
-      }
-    )
-  })
-
-  valid_orgs <- purrr::compact(orgs)
-
-  if (length(valid_orgs) == 0) {
-    return(schema_cristin_organization_detail())
-  }
-
-  nva_parse_cristin_organization_details(valid_orgs)
+  nva_fetch_multiple(
+    ids = ids,
+    fetch_fn = nva_cristin_organization,
+    parse_fn = nva_parse_cristin_organization_details,
+    empty_schema = schema_cristin_organization_detail,
+    resource_name = "organization"
+  )
 }
 
 #' Parse Cristin organization detail records into tibble
@@ -144,6 +134,7 @@ nva_normalize_org_id <- function(id) {
 #'   \item{name}{Organization name (prefers English, falls back to Norwegian)}
 #'   \item{acronym}{Organization acronym}
 #'   \item{country}{Country code}
+#'   \item{type}{Organization type (e.g., university, research institute)}
 #' }
 #'
 #' @export
@@ -160,6 +151,14 @@ nva_cristin_organization_search <- function(query = NULL,
                                              depth = c("top", "full"),
                                              limit = 10L,
                                              page = 1L) {
+  if (is.null(query) || identical(query, "")) {
+    cli::cli_abort("{.arg query} must be provided.")
+  }
+
+  if (limit < 1 || limit > 100) {
+    cli::cli_abort("{.arg limit} must be between 1 and 100.")
+  }
+
   depth <- rlang::arg_match(depth)
 
   tbl <- nva_get_tibble(
@@ -194,6 +193,19 @@ nva_parse_cristin_organizations <- function(tbl) {
     },
     country = if ("country" %in% names(tbl)) {
       as.character(tbl$country)
+    } else {
+      rep(NA_character_, nrow(tbl))
+    },
+    type = if ("institutionType" %in% names(tbl)) {
+      purrr::map_chr(tbl$institutionType, \(x) {
+        if (is.null(x) || length(x) == 0) {
+          NA_character_
+        } else if (is.list(x) && "labels" %in% names(x)) {
+          nva_get_label(x$labels)
+        } else {
+          as.character(x)
+        }
+      })
     } else {
       rep(NA_character_, nrow(tbl))
     }
@@ -286,7 +298,7 @@ collect_subunits <- function(subunits, level, depth, results) {
 #' @param fetch_all If TRUE, fetch all publications. Default: FALSE
 #' @param max_results Maximum results when `fetch_all = TRUE` (default: Inf)
 #'
-#' @return A tibble with publication information (same format as nva_search)
+#' @return A tibble with publication information (same format as nva_publication_search)
 #'
 #' @export
 #'
@@ -309,6 +321,10 @@ nva_cristin_organization_publications <- function(id,
     cli::cli_abort("{.arg id} is required.")
   }
 
+  if (limit < 1 || limit > 100) {
+    cli::cli_abort("{.arg limit} must be between 1 and 100.")
+  }
+
   id <- as.character(id)
 
   if (fetch_all) {
@@ -318,7 +334,8 @@ nva_cristin_organization_publications <- function(id,
       publication_year = year,
       instanceType = type,
       results_per_page = 100L,
-      max_results = max_results
+      max_results = max_results,
+      empty_schema = schema_publication_search
     )
   } else {
     tbl <- nva_get_tibble(
@@ -336,4 +353,105 @@ nva_cristin_organization_publications <- function(id,
   }
 
   nva_parse_search_results(tbl)
+}
+
+#' Get persons affiliated with a Cristin organization
+#'
+#' Retrieves a list of persons affiliated with a specific organization.
+#'
+#' @param id Cristin organization identifier
+#' @param limit Number of results per page (default: 10, max: 100)
+#' @param page Page number for pagination (default: 1)
+#'
+#' @return A tibble with columns:
+#' \describe{
+#'   \item{id}{Cristin person ID}
+#'   \item{first_name}{First name}
+#'   \item{last_name}{Last name}
+#'   \item{affiliations}{List of current affiliations}
+#' }
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Get persons at University of Oslo
+#' persons <- nva_cristin_organization_persons(185)
+#'
+#' # Get more results
+#' persons <- nva_cristin_organization_persons(185, limit = 50, page = 2)
+#' }
+nva_cristin_organization_persons <- function(id, limit = 10L, page = 1L) {
+  if (missing(id) || is.null(id)) {
+    cli::cli_abort("{.arg id} is required.")
+  }
+
+  if (limit < 1 || limit > 100) {
+    cli::cli_abort("{.arg limit} must be between 1 and 100.")
+  }
+
+  id <- nva_normalize_org_id(id)
+
+  tbl <- nva_get_tibble(
+    paste0("cristin/organization/", id, "/persons"),
+    results = limit,
+    page = page
+  )
+
+  if (nrow(tbl) == 0) {
+    return(schema_cristin_person())
+  }
+
+  nva_parse_cristin_persons(tbl)
+}
+
+#' Get projects associated with a Cristin organization
+#'
+#' Retrieves a list of projects associated with a specific organization.
+#'
+#' @param id Cristin organization identifier
+#' @param limit Number of results per page (default: 5, max: 100)
+#' @param page Page number for pagination (default: 1)
+#'
+#' @return A tibble with columns:
+#' \describe{
+#'   \item{id}{Cristin project ID}
+#'   \item{title}{Project title}
+#'   \item{status}{Project status}
+#'   \item{start_date}{Project start date}
+#'   \item{end_date}{Project end date}
+#' }
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Get projects at University of Oslo
+#' projects <- nva_cristin_organization_projects(185)
+#'
+#' # Get more results
+#' projects <- nva_cristin_organization_projects(185, limit = 20, page = 2)
+#' }
+nva_cristin_organization_projects <- function(id, limit = 5L, page = 1L) {
+  if (missing(id) || is.null(id)) {
+    cli::cli_abort("{.arg id} is required.")
+  }
+
+  if (limit < 1 || limit > 100) {
+    cli::cli_abort("{.arg limit} must be between 1 and 100.")
+  }
+
+  id <- nva_normalize_org_id(id)
+
+  tbl <- nva_get_tibble(
+    paste0("cristin/organization/", id, "/projects"),
+    results = limit,
+    page = page
+  )
+
+  if (nrow(tbl) == 0) {
+    return(schema_cristin_project())
+  }
+
+  nva_parse_cristin_projects(tbl)
 }
