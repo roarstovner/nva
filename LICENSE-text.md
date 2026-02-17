@@ -1,4 +1,4 @@
 # License
 
     YEAR: 2026
-    COPYRIGHT HOLDER: Roar Stovner
+    COPYRIGHT HOLDER: nva authors
