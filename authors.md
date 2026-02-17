@@ -7,7 +7,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/roarstovner/nva/blob/v.0.2.0/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/roarstovner/nva/blob/main/DESCRIPTION)
 
 Bakken Stovner R (2026). *nva: R Client for the Norwegian National
 Research Archive (NVA) API*. R package version 0.1.0,
