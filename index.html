@@ -50,8 +50,7 @@
 <div class="page-header"><h1 id="nva">nva<a class="anchor" aria-label="anchor" href="#nva"></a>
 </h1></div>
 <!-- badges: start -->
-
-<p>nva provides an R interface to the <a href="https://nva.sikt.no" class="external-link">Norwegian National Research Archive (NVA)</a> API. It covers both the NVA publication search and the <a href="https://www.cristin.no/" class="external-link">Cristin</a> registry for persons, organizations, and projects.</p>
+<!-- badges: end --><p>nva provides an R interface to the <a href="https://nva.sikt.no" class="external-link">Norwegian National Research Archive (NVA)</a> API. It covers both the NVA publication search and the <a href="https://www.cristin.no/" class="external-link">Cristin</a> registry for persons, organizations, and projects.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -69,10 +68,10 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://roarstovner.github.io/nva/">nva</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Basic search</span></span>
-<span><span class="fu"><a href="reference/nva_publication_search.html">nva_search</a></span><span class="op">(</span><span class="st">"climate change"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/nva_publication_search.html">nva_publication_search</a></span><span class="op">(</span><span class="st">"climate change"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Filter by year and organization</span></span>
-<span><span class="fu"><a href="reference/nva_publication_search.html">nva_search</a></span><span class="op">(</span><span class="st">"machine learning"</span>, year <span class="op">=</span> <span class="fl">2024</span>, organization <span class="op">=</span> <span class="st">"194"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/nva_publication_search.html">nva_publication_search</a></span><span class="op">(</span><span class="st">"machine learning"</span>, year <span class="op">=</span> <span class="fl">2024</span>, organization <span class="op">=</span> <span class="st">"194"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="publication-details-and-files">Publication details and files<a class="anchor" aria-label="anchor" href="#publication-details-and-files"></a>
@@ -103,7 +102,7 @@
 </h3>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Automatically fetch all pages</span></span>
-<span><span class="va">all_pubs</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/nva_publication_search.html">nva_search</a></span><span class="op">(</span><span class="st">"biodiversity"</span>, organization <span class="op">=</span> <span class="st">"185"</span>, fetch_all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">all_pubs</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/nva_publication_search.html">nva_publication_search</a></span><span class="op">(</span><span class="st">"biodiversity"</span>, organization <span class="op">=</span> <span class="st">"185"</span>, fetch_all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -160,6 +159,7 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/roarstovner/nva/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/roarstovner/nva/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://doi.org/10.5281/zenodo.18669096" class="external-link"><img src="https://zenodo.org/badge/1148897385.svg" alt="DOI"></a></li>
 </ul>
 </div>
 

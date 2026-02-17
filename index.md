@@ -20,10 +20,10 @@ pak::pak("roarstovner/nva")
 library(nva)
 
 # Basic search
-nva_search("climate change")
+nva_publication_search("climate change")
 
 # Filter by year and organization
-nva_search("machine learning", year = 2024, organization = "194")
+nva_publication_search("machine learning", year = 2024, organization = "194")
 ```
 
 ### Publication details and files
@@ -54,7 +54,7 @@ nva_cristin_project_search(query = "climate", status = "ACTIVE")
 
 ``` r
 # Automatically fetch all pages
-all_pubs <- nva_search("biodiversity", organization = "185", fetch_all = TRUE)
+all_pubs <- nva_publication_search("biodiversity", organization = "185", fetch_all = TRUE)
 ```
 
 ## Authentication
