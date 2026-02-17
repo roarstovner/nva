@@ -41,6 +41,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Implement extended Cristin endpoints (projects, keywords, funding) (#4)
 
 ### Fixed
+- Create nva R package wrapping the NVA API (#1)
 - Fix inconsistent output columns between nva_search and nva_publications (#62)
 - Fix nva_fetch_all using 'results' param instead of correct API param name (#69)
 - Fix nva_verified_funding_nfr_search parameter naming: 'nfr_project_id' should follow conventions (#60)

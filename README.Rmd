@@ -17,7 +17,10 @@ knitr::opts_chunk$set(
 # nva
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/roarstovner/nva/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/roarstovner/nva/actions/workflows/R-CMD-check.yaml)
+[!(https://github.com/roarstovner/nva/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/roarstovner/nva/actions/workflows/R-CMD-check.yaml)
+
+[!(https://zenodo.org/badge/1148897385.svg)](https://doi.org/10.5281/zenodo.18669096)
+
 <!-- badges: end -->
 
 nva provides an R interface to the [Norwegian National Research Archive (NVA)](https://nva.sikt.no) API. It covers both the NVA publication search and the [Cristin](https://www.cristin.no/) registry for persons, organizations, and projects.
