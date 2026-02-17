@@ -14,6 +14,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Imports:
     httr2 (>= 1.0.0),
+    dplyr,
     tibble,
     tidyr,
     purrr,
@@ -21,7 +22,6 @@ Imports:
     cli,
     lifecycle
 Suggests:
-    dplyr,
     jsonlite,
     knitr,
     rmarkdown,
