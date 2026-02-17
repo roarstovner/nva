@@ -1,11 +1,25 @@
 
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # nva
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/roarstovner/nva/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/roarstovner/nva/actions/workflows/R-CMD-check.yaml)
+<figure>
+<a
+href="https://github.com/roarstovner/nva/actions/workflows/R-CMD-check.yaml"><img
+src="https://github.com/roarstovner/nva/actions/workflows/R-CMD-check.yaml/badge.svg"
+alt="R-CMD-check" /></a>
+<figcaption>R-CMD-check</figcaption>
+</figure>
+
+<figure>
+<a href="https://doi.org/10.5281/zenodo.18669096"><img
+src="https://zenodo.org/badge/1148897385.svg" alt="DOI" /></a>
+<figcaption>DOI</figcaption>
+</figure>
+
 <!-- badges: end -->
 
 nva provides an R interface to the [Norwegian National Research Archive
@@ -28,10 +42,10 @@ pak::pak("roarstovner/nva")
 library(nva)
 
 # Basic search
-nva_search("climate change")
+nva_publication_search("climate change")
 
 # Filter by year and organization
-nva_search("machine learning", year = 2024, organization = "194")
+nva_publication_search("machine learning", year = 2024, organization = "194")
 ```
 
 ### Publication details and files
@@ -62,7 +76,7 @@ nva_cristin_project_search(query = "climate", status = "ACTIVE")
 
 ``` r
 # Automatically fetch all pages
-all_pubs <- nva_search("biodiversity", organization = "185", fetch_all = TRUE)
+all_pubs <- nva_publication_search("biodiversity", organization = "185", fetch_all = TRUE)
 ```
 
 ## Authentication
@@ -78,7 +92,7 @@ Or add `NVA_API_KEY=your_key` to your `.Renviron` (use
 
 ## Learn more
 
-- [Getting started
-  vignette](https://roarstovner.github.io/nva/articles/nva.html)
-- [Function reference](https://roarstovner.github.io/nva/reference/)
-- [NVA API documentation](https://swagger-ui.nva.unit.no)
+-   [Getting started
+    vignette](https://roarstovner.github.io/nva/articles/nva.html)
+-   [Function reference](https://roarstovner.github.io/nva/reference/)
+-   [NVA API documentation](https://swagger-ui.nva.unit.no)
